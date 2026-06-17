@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Prazos - CEP & Pesquisador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Custom scrollbar for calendars */
+        .calendar-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+        .calendar-scroll::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .calendar-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        .calendar-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-gray-200 selection:bg-indigo-100 selection:text-indigo-900">
+
+    <div class="bg-white rounded-[24px] shadow-2xl shadow-indigo-100/50 w-full max-w-4xl overflow-hidden border border-white">
+        
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-6 text-white text-center relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-black/10 rounded-full blur-2xl"></div>
+            
+            <h1 class="text-2xl sm:text-3xl font-bold mb-1 relative z-10 tracking-tight">Controle de Prazos de Pesquisa</h1>
+            <p class="text-slate-300 text-sm font-medium relative z-10">Dias Úteis (Brasil e Alagoas)</p>
+        </div>
+
+        <div class="p-4 sm:p-6">
+            
+            <!-- Data Atual -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 sm:gap-2 mb-6 text-sm text-gray-600 bg-gray-50/70 p-3 rounded-xl border border-gray-100">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="font-medium text-xs sm:text-sm">Hoje é</span>
+                </div>
+                <span id="todayDisplay" class="font-bold text-gray-800 text-xs sm:text-sm sm:text-right"></span>
+            </div>
+
+            <!-- Grid de Duas Colunas -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Coluna Esquerda: CEP (Azul/Índigo) -->
+                <div class="bg-indigo-50/40 rounded-2xl p-4 sm:p-5 border border-indigo-100">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        <h2 class="text-lg font-bold text-indigo-900">Datas do CEP</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Trecho 1 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300">
+                            <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mb-2">1º Trecho de Análise</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data 1 (Aceitação)</label>
+                                    <input type="date" id="cepD1" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data 2 (Parecer liberado)</label>
+                                    <input type="date" id="cepD2" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Trecho 2 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300">
+                            <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mb-2">2º Trecho de Análise</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data 3 (Aceitação)</label>
+                                    <input type="date" id="cepD3" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data 4 (Parecer liberado)</label>
+                                    <input type="date" id="cepD4" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resultado CEP -->
+                    <div id="resultCep" class="mt-4 bg-indigo-600 text-white rounded-xl p-4 shadow-lg shadow-indigo-200 hidden fade-in">
+                        <p class="text-xs text-indigo-200 font-semibold uppercase tracking-wider mb-1">Tempo Total no CEP</p>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-4xl font-black" id="cepTotalDias">0</span>
+                            <span class="text-sm text-indigo-100 font-medium">dias úteis</span>
+                        </div>
+                        <div id="cepDetails" class="mt-3 pt-3 border-t border-indigo-500/50 text-xs text-indigo-100 space-y-1">
+                            <!-- Preenchido via JS -->
+                        </div>
+                        
+                        <!-- Calendário CEP -->
+                        <div id="cepCalendarArea" class="mt-4 pt-4 border-t border-indigo-500/50">
+                            <p class="text-[10px] text-indigo-200 font-semibold uppercase tracking-wider mb-2 text-center">Calendário de Contagem</p>
+                            <div id="cepCalendarGrid" class="flex gap-2 overflow-x-auto pb-2 snap-x calendar-scroll"></div>
+                            <div class="flex justify-center gap-3 mt-1 text-[9px] text-indigo-200">
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-indigo-100"></span> Útil</span>
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-indigo-900/40 border border-indigo-400/30"></span> Fim de Sem.</span>
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-rose-400"></span> Feriado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coluna Direita: Pesquisador (Verde/Esmeralda) -->
+                <div class="bg-emerald-50/40 rounded-2xl p-4 sm:p-5 border border-emerald-100">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        <h2 class="text-lg font-bold text-emerald-900">Datas do Pesquisador</h2>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Trecho 1 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">1º Trecho de Resposta</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data 1 (Parecer liberado)</label>
+                                    <input type="date" id="pesqD1" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data 2 (Aceitação)</label>
+                                    <input type="date" id="pesqD2" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trecho 2 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400">
+                            <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">2º Trecho de Resposta</p>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data 3 (Parecer liberado)</label>
+                                    <input type="date" id="pesqD3" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Data 4 (Aceitação)</label>
+                                    <input type="date" id="pesqD4" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Resultado Pesquisador -->
+                    <div id="resultPesq" class="mt-4 bg-emerald-500 text-white rounded-xl p-4 shadow-lg shadow-emerald-200 hidden fade-in">
+                        <p class="text-xs text-emerald-100 font-semibold uppercase tracking-wider mb-1">Tempo Total do Pesquisador</p>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-4xl font-black" id="pesqTotalDias">0</span>
+                            <span class="text-sm text-emerald-50 font-medium">dias úteis</span>
+                        </div>
+                        <div id="pesqDetails" class="mt-3 pt-3 border-t border-emerald-400/50 text-xs text-emerald-50 space-y-1">
+                            <!-- Preenchido via JS -->
+                        </div>
+                        
+                        <!-- Calendário Pesquisador -->
+                        <div id="pesqCalendarArea" class="mt-4 pt-4 border-t border-emerald-400/50">
+                            <p class="text-[10px] text-emerald-200 font-semibold uppercase tracking-wider mb-2 text-center">Calendário de Contagem</p>
+                            <div id="pesqCalendarGrid" class="flex gap-2 overflow-x-auto pb-2 snap-x calendar-scroll"></div>
+                            <div class="flex justify-center gap-3 mt-1 text-[9px] text-emerald-100">
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-emerald-50"></span> Útil</span>
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-emerald-900/40 border border-emerald-400/30"></span> Fim de Sem.</span>
+                                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-rose-400"></span> Feriado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuração Inicial de Data
+        const formatDateForDisplay = (date) => {
+            const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+            const formatted = date.toLocaleDateString('pt-BR', options);
+            return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+        };
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+        document.getElementById('todayDisplay').textContent = formatDateForDisplay(today);
+
+        // Funções de Cálculo de Feriados (Brasil e Alagoas)
+        function getEaster(year) {
+            const a = year % 19;
+            const b = Math.floor(year / 100);
+            const c = year % 100;
+            const d = Math.floor(b / 4);
+            const e = b % 4;
+            const f = Math.floor((b + 8) / 25);
+            const g = Math.floor((b - f + 1) / 3);
+            const h = (19 * a + b - d - g + 15) % 30;
+            const i = Math.floor(c / 4);
+            const k = c % 4;
+            const l = (32 + 2 * e + 2 * i - h - k) % 7;
+            const m = Math.floor((a + 11 * h + 22 * l) / 451);
+            const month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
+            const day = ((h + l - 7 * m + 114) % 31) + 1;
+            return new Date(year, month, day);
+        }
+
+        function getHolidaysForYear(year) {
+            const fixedHolidays = [
+                { month: 0, day: 1 }, { month: 3, day: 21 }, { month: 4, day: 1 },
+                { month: 5, day: 24 }, { month: 5, day: 29 }, { month: 8, day: 7 },
+                { month: 8, day: 16 }, { month: 9, day: 12 }, { month: 10, day: 2 },
+                { month: 10, day: 15 }, { month: 10, day: 20 }, { month: 11, day: 25 }
+            ];
+
+            const holidays = fixedHolidays.map(h => new Date(year, h.month, h.day).getTime());
+
+            const easter = getEaster(year);
+            const carnaval = new Date(easter); carnaval.setDate(carnaval.getDate() - 47);
+            const sextaSanta = new Date(easter); sextaSanta.setDate(sextaSanta.getDate() - 2);
+            const corpusChristi = new Date(easter); corpusChristi.setDate(corpusChristi.getDate() + 60);
+
+            holidays.push(carnaval.getTime(), sextaSanta.getTime(), corpusChristi.getTime());
+            return holidays;
+        }
+
+        // Formatação usando BARRAS e HÍFEN
+        const formatCompactDate = (date) => {
+            return date.toLocaleDateString('pt-BR');
+        };
+
+        // Função principal de cálculo entre duas datas
+        function calcularPeriodo(dataInicio, dataFim) {
+            let businessDays = 0;
+            let currentDate = new Date(dataInicio);
+            currentDate.setDate(currentDate.getDate() + 1); // Começa a contar dia seguinte
+
+            const holidaysCache = {};
+
+            while (currentDate <= dataFim) {
+                const year = currentDate.getFullYear();
+                if (!holidaysCache[year]) holidaysCache[year] = getHolidaysForYear(year);
+
+                const dayOfWeek = currentDate.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const isHoliday = holidaysCache[year].includes(currentDate.getTime());
+
+                if (!isWeekend && !isHoliday) businessDays++;
+
+                currentDate.setDate(currentDate.getDate() + 1);
+                currentDate.setHours(0,0,0,0);
+            }
+
+            return businessDays;
+        }
+
+        function parseDate(inputVal) {
+            if (!inputVal) return null;
+            const parts = inputVal.split('-');
+            const d = new Date(parts[0], parts[1] - 1, parts[2]);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+
+        // --- GERADOR DE CALENDÁRIOS ---
+        function generateCalendarHTML(periods, theme) {
+            if (!periods || periods.length === 0) return '';
+
+            // Achar min e max para saber quantos meses desenhar
+            let minDate = new Date(periods[0].start);
+            let maxDate = new Date(periods[0].end);
+            periods.forEach(p => {
+                if (p.start < minDate) minDate = new Date(p.start);
+                if (p.end > maxDate) maxDate = new Date(p.end);
+            });
+
+            // Se for um período longo demais (mais de 1 ano), limitar para não travar
+            const monthDiff = (maxDate.getFullYear() - minDate.getFullYear()) * 12 + (maxDate.getMonth() - minDate.getMonth());
+            if (monthDiff > 24) return '<div class="text-[10px] text-center w-full py-4 opacity-70">Período muito longo para exibição do calendário (máximo 2 anos).</div>';
+
+            let currentMonth = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+            const endMonth = new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
+
+            let html = '';
+            while (currentMonth <= endMonth) {
+                html += buildMonthHtml(currentMonth, periods, theme);
+                currentMonth.setMonth(currentMonth.getMonth() + 1);
+            }
+            return html;
+        }
+
+        function buildMonthHtml(monthDate, periods, theme) {
+            const year = monthDate.getFullYear();
+            const month = monthDate.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDayOfWeek = new Date(year, month, 1).getDay();
+            const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+            const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+
+            const themeStyles = theme === 'indigo' ? {
+                valid: 'bg-indigo-100 text-indigo-900 font-bold shadow-sm',
+                weekend: 'bg-indigo-900/40 text-indigo-200 border border-indigo-400/20',
+                holiday: 'bg-rose-400 text-white font-bold',
+                invalid: 'text-indigo-300/30'
+            } : {
+                valid: 'bg-emerald-50 text-emerald-900 font-bold shadow-sm',
+                weekend: 'bg-emerald-900/40 text-emerald-200 border border-emerald-400/20',
+                holiday: 'bg-rose-400 text-white font-bold',
+                invalid: 'text-emerald-300/30'
+            };
+
+            let gridHtml = `<div class="min-w-[135px] p-2 rounded-xl bg-white/10 snap-center border border-white/5 shrink-0">`;
+            gridHtml += `<div class="text-center font-bold text-[10px] mb-1.5 opacity-90">${monthNames[month]} ${year}</div>`;
+            
+            // Header dos dias da semana
+            gridHtml += `<div class="grid grid-cols-7 gap-0.5 mb-1">`;
+            weekdays.forEach(d => gridHtml += `<div class="text-center text-[8px] font-bold opacity-60">${d}</div>`);
+            gridHtml += `</div><div class="grid grid-cols-7 gap-0.5">`;
+
+            // Dias vazios no começo do mês
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                gridHtml += `<div></div>`;
+            }
+
+            const holidays = getHolidaysForYear(year);
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const currentDate = new Date(year, month, d);
+                currentDate.setHours(0,0,0,0);
+                const ts = currentDate.getTime();
+
+                // Verifica se a data está dentro de algum período contabilizado
+                let isCounted = false;
+                periods.forEach(p => {
+                    let countStart = new Date(p.start);
+                    countStart.setDate(countStart.getDate() + 1); // Contagem só começa no dia SEGUINTE
+                    countStart.setHours(0,0,0,0);
+                    let countEnd = new Date(p.end);
+                    countEnd.setHours(0,0,0,0);
+
+                    if (currentDate >= countStart && currentDate <= countEnd) {
+                        isCounted = true;
+                    }
+                });
+
+                let cellClass = `text-center rounded-[3px] py-[2px] text-[9px] `;
+                if (isCounted) {
+                    const dayOfWeek = currentDate.getDay();
+                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                    const isHoliday = holidays.includes(ts);
+
+                    if (isWeekend) cellClass += themeStyles.weekend;
+                    else if (isHoliday) cellClass += themeStyles.holiday;
+                    else cellClass += themeStyles.valid;
+                } else {
+                    cellClass += themeStyles.invalid;
+                }
+
+                gridHtml += `<div class="${cellClass}">${d}</div>`;
+            }
+            gridHtml += `</div></div>`;
+            return gridHtml;
+        }
+
+        // --- LÓGICA DO CEP ---
+        function calcularCEP() {
+            const d1 = parseDate(document.getElementById('cepD1').value);
+            const d2 = parseDate(document.getElementById('cepD2').value);
+            const d3 = parseDate(document.getElementById('cepD3').value);
+            const d4 = parseDate(document.getElementById('cepD4').value);
+            
+            const resultBox = document.getElementById('resultCep');
+            const totalSpan = document.getElementById('cepTotalDias');
+            const detailsDiv = document.getElementById('cepDetails');
+            const calGrid = document.getElementById('cepCalendarGrid');
+            const calArea = document.getElementById('cepCalendarArea');
+            
+            let totalDias = 0;
+            let detailsHtml = '';
+            let periods = [];
+
+            // Trecho 1
+            if (d1 && d2 && d2 >= d1) {
+                const diasT1 = calcularPeriodo(d1, d2);
+                totalDias += diasT1;
+                periods.push({start: d1, end: d2});
+                detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${formatCompactDate(d2)})</span> <span class="font-bold">${diasT1} dias</span></div>`;
+            } else if (d1 && d2 && d2 < d1) {
+                detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
+            }
+
+            // Trecho 2
+            if (d3 && d4 && d4 >= d3) {
+                const diasT2 = calcularPeriodo(d3, d4);
+                totalDias += diasT2;
+                periods.push({start: d3, end: d4});
+                detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${formatCompactDate(d4)})</span> <span class="font-bold">${diasT2} dias</span></div>`;
+            } else if (d3 && d4 && d4 < d3) {
+                detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
+            }
+
+            if (detailsHtml !== '') {
+                totalSpan.textContent = totalDias;
+                detailsDiv.innerHTML = detailsHtml;
+                
+                // Gerar Calendário
+                if (periods.length > 0) {
+                    calGrid.innerHTML = generateCalendarHTML(periods, 'indigo');
+                    calArea.classList.remove('hidden');
+                } else {
+                    calArea.classList.add('hidden');
+                }
+                
+                resultBox.classList.remove('hidden');
+            } else {
+                resultBox.classList.add('hidden');
+            }
+        }
+
+        // --- LÓGICA DO PESQUISADOR ---
+        function calcularPesquisador() {
+            const d1 = parseDate(document.getElementById('pesqD1').value);
+            const d2 = parseDate(document.getElementById('pesqD2').value);
+            const d3 = parseDate(document.getElementById('pesqD3').value);
+            const d4 = parseDate(document.getElementById('pesqD4').value);
+            
+            const resultBox = document.getElementById('resultPesq');
+            const totalSpan = document.getElementById('pesqTotalDias');
+            const detailsDiv = document.getElementById('pesqDetails');
+            const calGrid = document.getElementById('pesqCalendarGrid');
+            const calArea = document.getElementById('pesqCalendarArea');
+            
+            let totalDias = 0;
+            let detailsHtml = '';
+            let periods = [];
+
+            // Trecho 1
+            if (d1 && d2 && d2 >= d1) {
+                const diasT1 = calcularPeriodo(d1, d2);
+                totalDias += diasT1;
+                periods.push({start: d1, end: d2});
+                detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${formatCompactDate(d2)})</span> <span class="font-bold">${diasT1} dias</span></div>`;
+            } else if (d1 && d2 && d2 < d1) {
+                detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
+            }
+
+            // Trecho 2
+            if (d3 && d4 && d4 >= d3) {
+                const diasT2 = calcularPeriodo(d3, d4);
+                totalDias += diasT2;
+                periods.push({start: d3, end: d4});
+                detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${formatCompactDate(d4)})</span> <span class="font-bold">${diasT2} dias</span></div>`;
+            } else if (d3 && d4 && d4 < d3) {
+                detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
+            }
+
+            if (detailsHtml !== '') {
+                totalSpan.textContent = totalDias;
+                detailsDiv.innerHTML = detailsHtml;
+                
+                // Gerar Calendário
+                if (periods.length > 0) {
+                    calGrid.innerHTML = generateCalendarHTML(periods, 'emerald');
+                    calArea.classList.remove('hidden');
+                } else {
+                    calArea.classList.add('hidden');
+                }
+
+                resultBox.classList.remove('hidden');
+            } else {
+                resultBox.classList.add('hidden');
+            }
+        }
+
+        // Adicionar Listeners a todos os campos
+        ['cepD1', 'cepD3'].forEach(id => {
+            document.getElementById(id).addEventListener('change', calcularCEP);
+        });
+
+        // Evento especial para sincronizar Data 2 do CEP com a Data 1 do Pesquisador
+        document.getElementById('cepD2').addEventListener('change', (e) => {
+            document.getElementById('pesqD1').value = e.target.value;
+            calcularCEP();
+            calcularPesquisador();
+        });
+
+        // Evento especial para sincronizar Data 4 do CEP com a Data 3 do Pesquisador
+        document.getElementById('cepD4').addEventListener('change', (e) => {
+            document.getElementById('pesqD3').value = e.target.value;
+            calcularCEP();
+            calcularPesquisador();
+        });
+
+        ['pesqD1', 'pesqD2', 'pesqD3', 'pesqD4'].forEach(id => {
+            document.getElementById(id).addEventListener('change', calcularPesquisador);
+        });
+
+    </script>
+</body>
+</html>
