@@ -683,8 +683,15 @@
             calcularPesquisador();
         });
 
-        // Campos do Pesquisador (sem o pesqD2, que agora tem sua automação própria acima)
-        ['pesqD1', 'pesqD3', 'pesqD4', 'pesqD5', 'pesqD6'].forEach(id => {
+        // Automação: Sincroniza a Data 4 do Pesquisador para a Data 5 do CEP
+        document.getElementById('pesqD4').addEventListener('change', (e) => {
+            document.getElementById('cepD5').value = e.target.value;
+            calcularCEP();
+            calcularPesquisador();
+        });
+
+        // Campos do Pesquisador (sem pesqD2 e pesqD4, que agora têm suas automações próprias acima)
+        ['pesqD1', 'pesqD3', 'pesqD5', 'pesqD6'].forEach(id => {
             document.getElementById(id).addEventListener('change', calcularPesquisador);
         });
 
