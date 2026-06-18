@@ -66,15 +66,24 @@
                         <svg class="w-4 h-4 sm:w-5 sm:h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         <span class="font-medium text-xs sm:text-sm">Hoje é</span>
                     </div>
-                    <!-- O texto desta tag é preenchido via JavaScript -->
                     <span id="todayDisplay" class="font-bold text-gray-800 text-xs sm:text-sm text-right"></span>
                 </div>
 
-                <!-- Botão Limpar -->
-                <button type="button" onclick="limparDados()" class="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-4 py-3 bg-white text-rose-500 border border-rose-200 hover:bg-rose-50 hover:border-rose-300 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-sm focus:ring-2 focus:ring-rose-200 outline-none">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    Limpar Dados
-                </button>
+                <!-- Grupo de Botões de Ação -->
+                <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
+                    
+                    <!-- Botão Copiar Dados -->
+                    <button type="button" onclick="copiarDados()" class="flex items-center justify-center gap-2 px-4 py-3 bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-sm focus:ring-2 focus:ring-indigo-200 outline-none w-full sm:w-auto">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        <span id="btnCopyText">Copiar Resumo</span>
+                    </button>
+
+                    <!-- Botão Limpar -->
+                    <button type="button" onclick="limparDados()" class="flex items-center justify-center gap-2 px-4 py-3 bg-white text-rose-500 border border-rose-200 hover:bg-rose-50 hover:border-rose-300 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-sm focus:ring-2 focus:ring-rose-200 outline-none w-full sm:w-auto">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        Limpar
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -699,21 +708,120 @@
          * Função para limpar todos os campos e resetar a interface
          */
         function limparDados() {
-            // Todos os IDs dos inputs de ambos os lados
             const campos = [
                 'cepD1', 'cepD2', 'cepD3', 'cepD4', 'cepD5', 'cepD6',
                 'pesqD1', 'pesqD2', 'pesqD3', 'pesqD4', 'pesqD5', 'pesqD6'
             ];
-            
-            // Esvazia os valores preenchidos
-            campos.forEach(id => {
-                document.getElementById(id).value = '';
-            });
-
-            // Dispara as funções de cálculo. Como os campos estarão vazios,
-            // as funções irão automaticamente esconder os cartões de resultado e calendários.
+            campos.forEach(id => document.getElementById(id).value = '');
             calcularCEP();
             calcularPesquisador();
+        }
+
+        /**
+         * Função para gerar o texto formatado e copiá-lo para a área de transferência
+         */
+        function copiarDados() {
+            let texto = "--- RESUMO DE PRAZOS ---\n\n";
+            let temDados = false;
+
+            // Auxiliar para pegar datas
+            const getD = (id) => parseDate(document.getElementById(id).value);
+
+            // --- Analisando CEP ---
+            const cd1 = getD('cepD1'), cd2 = getD('cepD2');
+            const cd3 = getD('cepD3'), cd4 = getD('cepD4');
+            const cd5 = getD('cepD5'), cd6 = getD('cepD6');
+
+            let cepTotal = 0;
+            let cepText = "[ DATAS DO CEP ]\n";
+            let hasCep = false;
+
+            if (cd1 && cd2 && cd2 >= cd1) {
+                const dias = calcularPeriodo(cd1, cd2);
+                cepTotal += dias;
+                cepText += `- 1º Trecho: ${formatCompactDate(cd1)} a ${formatCompactDate(cd2)} (${dias} dias úteis)\n`;
+                hasCep = true;
+            }
+            if (cd3 && cd4 && cd4 >= cd3) {
+                const dias = calcularPeriodo(cd3, cd4);
+                cepTotal += dias;
+                cepText += `- 2º Trecho: ${formatCompactDate(cd3)} a ${formatCompactDate(cd4)} (${dias} dias úteis)\n`;
+                hasCep = true;
+            }
+            if (cd5 && cd6 && cd6 >= cd5) {
+                const dias = calcularPeriodo(cd5, cd6);
+                cepTotal += dias;
+                cepText += `- 3º Trecho: ${formatCompactDate(cd5)} a ${formatCompactDate(cd6)} (${dias} dias úteis)\n`;
+                hasCep = true;
+            }
+
+            if (hasCep) {
+                cepText += `-> TOTAL CEP: ${cepTotal} dias úteis\n\n`;
+                texto += cepText;
+                temDados = true;
+            }
+
+            // --- Analisando Pesquisador ---
+            const pd1 = getD('pesqD1'), pd2 = getD('pesqD2');
+            const pd3 = getD('pesqD3'), pd4 = getD('pesqD4');
+            const pd5 = getD('pesqD5'), pd6 = getD('pesqD6');
+
+            let pesqTotal = 0;
+            let pesqText = "[ DATAS DO PESQUISADOR ]\n";
+            let hasPesq = false;
+
+            if (pd1 && pd2 && pd2 >= pd1) {
+                const dias = calcularPeriodo(pd1, pd2);
+                pesqTotal += dias;
+                pesqText += `- 1º Trecho: ${formatCompactDate(pd1)} a ${formatCompactDate(pd2)} (${dias} dias úteis)\n`;
+                hasPesq = true;
+            }
+            if (pd3 && pd4 && pd4 >= pd3) {
+                const dias = calcularPeriodo(pd3, pd4);
+                pesqTotal += dias;
+                pesqText += `- 2º Trecho: ${formatCompactDate(pd3)} a ${formatCompactDate(pd4)} (${dias} dias úteis)\n`;
+                hasPesq = true;
+            }
+            if (pd5 && pd6 && pd6 >= pd5) {
+                const dias = calcularPeriodo(pd5, pd6);
+                pesqTotal += dias;
+                pesqText += `- 3º Trecho: ${formatCompactDate(pd5)} a ${formatCompactDate(pd6)} (${dias} dias úteis)\n`;
+                hasPesq = true;
+            }
+
+            if (hasPesq) {
+                pesqText += `-> TOTAL PESQUISADOR: ${pesqTotal} dias úteis\n`;
+                texto += pesqText;
+                temDados = true;
+            }
+
+            if (!temDados) {
+                texto = "Nenhum prazo foi preenchido corretamente para cópia.";
+            }
+
+            // Executa a cópia
+            const textarea = document.createElement('textarea');
+            textarea.value = texto;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                // Altera o texto do botão para dar feedback visual
+                const btnCopyText = document.getElementById('btnCopyText');
+                const originalText = btnCopyText.innerText;
+                btnCopyText.innerText = 'Copiado!';
+                setTimeout(() => {
+                    btnCopyText.innerText = originalText;
+                }, 2000);
+            } catch (err) {
+                console.error('Erro ao copiar os dados: ', err);
+            }
+            
+            document.body.removeChild(textarea);
         }
 
     </script>
