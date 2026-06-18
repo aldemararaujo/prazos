@@ -4,27 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Prazos - CEP & Pesquisador</title>
-    <!-- Importação do Tailwind CSS para a estilização -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Importação da fonte Inter do Google Fonts para tipografia moderna -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         body { 
             font-family: 'Inter', sans-serif; 
-            /* Para garantir que o rodapé e o body fiquem alinhados em coluna */
             display: flex;
             flex-direction: column;
         }
         
-        /* Animação suave para revelar os resultados */
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* Scrollbar customizada e elegante para a rolagem dos calendários */
         .calendar-scroll::-webkit-scrollbar {
             height: 6px;
         }
@@ -42,12 +37,11 @@
     </style>
 </head>
 
-<body class="min-h-screen p-4 bg-gradient-to-br from-gray-50 to-gray-200 selection:bg-indigo-100 selection:text-indigo-900 justify-center items-center">
+<body class="min-h-screen p-4 bg-gradient-to-br from-gray-50 to-gray-200 selection:bg-indigo-100 selection:text-indigo-900 items-center justify-center">
 
-    <!-- Card Principal que envelopa a aplicação inteira -->
     <div class="bg-white rounded-[24px] shadow-2xl shadow-indigo-100/50 w-full max-w-4xl overflow-hidden border border-white">
         
-        <!-- Cabeçalho (Header) escuro com efeitos sutis de desfoque de fundo (Glows) -->
+        <!-- Cabeçalho -->
         <div class="bg-gradient-to-r from-slate-800 to-slate-900 p-6 text-white text-center relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
             <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-black/10 rounded-full blur-2xl"></div>
@@ -56,11 +50,10 @@
             <p class="text-slate-300 text-sm font-medium relative z-10">Dias Úteis (Brasil e Alagoas)</p>
         </div>
 
-        <!-- Área de conteúdo principal da calculadora -->
         <div class="p-4 sm:p-6">
             
+            <!-- Ações e Data Atual -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-                <!-- Painel Data -->
                 <div class="flex flex-row items-center justify-between sm:justify-start gap-2 text-sm text-gray-600 bg-gray-50/70 p-3 rounded-xl border border-gray-100 w-full flex-1">
                     <div class="flex items-center gap-2">
                         <svg class="w-4 h-4 sm:w-5 sm:h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -69,16 +62,12 @@
                     <span id="todayDisplay" class="font-bold text-gray-800 text-xs sm:text-sm text-right"></span>
                 </div>
 
-                <!-- Grupo de Botões de Ação -->
                 <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto shrink-0">
-                    
-                    <!-- Botão Copiar Dados -->
                     <button type="button" onclick="copiarDados()" class="flex items-center justify-center gap-2 px-4 py-3 bg-indigo-50 text-indigo-600 border border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-sm focus:ring-2 focus:ring-indigo-200 outline-none w-full sm:w-auto">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                         <span id="btnCopyText">Copiar Resumo</span>
                     </button>
 
-                    <!-- Botão Limpar -->
                     <button type="button" onclick="limparDados()" class="flex items-center justify-center gap-2 px-4 py-3 bg-white text-rose-500 border border-rose-200 hover:bg-rose-50 hover:border-rose-300 rounded-xl font-semibold text-xs sm:text-sm transition-all shadow-sm focus:ring-2 focus:ring-rose-200 outline-none w-full sm:w-auto">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         Limpar
@@ -86,12 +75,10 @@
                 </div>
             </div>
 
-            <!-- =============== SEÇÃO SUPERIOR: VALIDAÇÃO DOCUMENTAL (Violeta) =============== -->
+            <!-- =============== VALIDAÇÃO DOCUMENTAL =============== -->
             <div class="mb-6 bg-violet-50/40 rounded-2xl p-4 sm:p-5 border border-violet-100">
-                
                 <div class="flex items-center gap-2 mb-4">
                     <div class="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600">
-                        <!-- Icone de Documento Check -->
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>
                     </div>
                     <h2 class="text-lg font-bold text-violet-900">Avaliação Documental</h2>
@@ -115,18 +102,15 @@
 
                 <div id="resultValDoc" class="mt-4 bg-violet-600 text-white rounded-xl p-4 shadow-lg shadow-violet-200 hidden fade-in">
                     <p class="text-xs text-violet-200 font-semibold uppercase tracking-wider mb-1">Tempo Total na Validação</p>
-                    
                     <div class="flex items-baseline gap-1">
                         <span class="text-4xl font-black" id="valDocTotalDias">0</span>
                         <span class="text-sm text-violet-100 font-medium">dias úteis</span>
                     </div>
-                    
                     <div id="valDocDetails" class="mt-3 pt-3 border-t border-violet-500/50 text-xs text-violet-100 space-y-1"></div>
                     
-                    <div id="valDocCalendarArea" class="mt-4 pt-4 border-t border-violet-500/50">
+                    <div id="valDocCalendarArea" class="mt-4 pt-4 border-t border-violet-500/50 hidden">
                         <p class="text-[10px] text-violet-200 font-semibold uppercase tracking-wider mb-2 text-center">Calendário de Contagem</p>
                         <div id="valDocCalendarGrid" class="flex gap-2 overflow-x-auto pb-2 snap-x calendar-scroll"></div>
-                        
                         <div class="flex justify-center gap-3 mt-1 text-[9px] text-violet-200">
                             <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-violet-100"></span> Útil</span>
                             <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-violet-900/40 border border-violet-400/30"></span> Fim de Sem.</span>
@@ -138,10 +122,8 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
-                <!-- =============== COLUNA ESQUERDA: CEP (Azul/Índigo) =============== -->
+                <!-- =============== CEP =============== -->
                 <div class="bg-indigo-50/40 rounded-2xl p-4 sm:p-5 border border-indigo-100">
-                    
-                    <!-- Cabeçalho da Seção do CEP -->
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
@@ -149,10 +131,7 @@
                         <h2 class="text-lg font-bold text-indigo-900">Datas do CEP</h2>
                     </div>
 
-                    <!-- Campos de preenchimento (Inputs) do CEP -->
                     <div class="space-y-4">
-                        
-                        <!-- 1º Trecho de Análise (Datas 1 e 2) com Borda Reforçada -->
                         <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300">
                             <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mb-2">1º Trecho de Análise</p>
                             <div class="grid grid-cols-2 gap-3">
@@ -167,7 +146,6 @@
                             </div>
                         </div>
                         
-                        <!-- 2º Trecho de Análise (Datas 3 e 4) com Borda Reforçada -->
                         <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300">
                             <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mb-2">2º Trecho de Análise</p>
                             <div class="grid grid-cols-2 gap-3">
@@ -181,8 +159,7 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- 3º Trecho de Análise (Datas 5 e 6) com Borda Reforçada -->
+
                         <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300">
                             <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mb-2">3º Trecho de Análise</p>
                             <div class="grid grid-cols-2 gap-3">
@@ -200,24 +177,15 @@
 
                     <div id="resultCep" class="mt-4 bg-indigo-600 text-white rounded-xl p-4 shadow-lg shadow-indigo-200 hidden fade-in">
                         <p class="text-xs text-indigo-200 font-semibold uppercase tracking-wider mb-1">Tempo Total no CEP</p>
-                        
                         <div class="flex items-baseline gap-1">
-                            <!-- Número Grande Total -->
                             <span class="text-4xl font-black" id="cepTotalDias">0</span>
                             <span class="text-sm text-indigo-100 font-medium">dias úteis</span>
                         </div>
+                        <div id="cepDetails" class="mt-3 pt-3 border-t border-indigo-500/50 text-xs text-indigo-100 space-y-1"></div>
                         
-                        <!-- Lista das frações de tempo por trecho -->
-                        <div id="cepDetails" class="mt-3 pt-3 border-t border-indigo-500/50 text-xs text-indigo-100 space-y-1">
-                            <!-- Preenchido via JavaScript -->
-                        </div>
-                        
-                        <!-- Calendário visual do CEP renderizado em tempo real -->
-                        <div id="cepCalendarArea" class="mt-4 pt-4 border-t border-indigo-500/50">
+                        <div id="cepCalendarArea" class="mt-4 pt-4 border-t border-indigo-500/50 hidden">
                             <p class="text-[10px] text-indigo-200 font-semibold uppercase tracking-wider mb-2 text-center">Calendário de Contagem</p>
                             <div id="cepCalendarGrid" class="flex gap-2 overflow-x-auto pb-2 snap-x calendar-scroll"></div>
-                            
-                            <!-- Legenda do Calendário -->
                             <div class="flex justify-center gap-3 mt-1 text-[9px] text-indigo-200">
                                 <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-indigo-100"></span> Útil</span>
                                 <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-indigo-900/40 border border-indigo-400/30"></span> Fim de Sem.</span>
@@ -227,10 +195,8 @@
                     </div>
                 </div>
 
-                <!-- =============== COLUNA DIREITA: PESQUISADOR (Verde/Esmeralda) =============== -->
+                <!-- =============== PESQUISADOR =============== -->
                 <div class="bg-emerald-50/40 rounded-2xl p-4 sm:p-5 border border-emerald-100">
-                    
-                    <!-- Cabeçalho da Seção do Pesquisador -->
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
@@ -238,10 +204,7 @@
                         <h2 class="text-lg font-bold text-emerald-900">Datas do Pesquisador</h2>
                     </div>
 
-                    <!-- Campos de preenchimento (Inputs) do Pesquisador -->
                     <div class="space-y-4">
-                        
-                        <!-- 1º Trecho do Pesquisador com Borda Reforçada -->
                         <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400">
                             <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">1º Trecho de Resposta</p>
                             <div class="grid grid-cols-2 gap-3">
@@ -256,7 +219,6 @@
                             </div>
                         </div>
 
-                        <!-- 2º Trecho do Pesquisador com Borda Reforçada -->
                         <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400">
                             <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">2º Trecho de Resposta</p>
                             <div class="grid grid-cols-2 gap-3">
@@ -271,7 +233,6 @@
                             </div>
                         </div>
 
-                        <!-- 3º Trecho do Pesquisador com Borda Reforçada -->
                         <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400">
                             <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">3º Trecho de Resposta</p>
                             <div class="grid grid-cols-2 gap-3">
@@ -289,24 +250,15 @@
 
                     <div id="resultPesq" class="mt-4 bg-emerald-500 text-white rounded-xl p-4 shadow-lg shadow-emerald-200 hidden fade-in">
                         <p class="text-xs text-emerald-100 font-semibold uppercase tracking-wider mb-1">Tempo Total do Pesquisador</p>
-                        
                         <div class="flex items-baseline gap-1">
-                            <!-- Número Grande Total -->
                             <span class="text-4xl font-black" id="pesqTotalDias">0</span>
                             <span class="text-sm text-emerald-50 font-medium">dias úteis</span>
                         </div>
+                        <div id="pesqDetails" class="mt-3 pt-3 border-t border-emerald-400/50 text-xs text-emerald-50 space-y-1"></div>
                         
-                        <!-- Lista das frações de tempo por trecho -->
-                        <div id="pesqDetails" class="mt-3 pt-3 border-t border-emerald-400/50 text-xs text-emerald-50 space-y-1">
-                            <!-- Preenchido via JavaScript -->
-                        </div>
-                        
-                        <!-- Calendário visual do Pesquisador renderizado em tempo real -->
-                        <div id="pesqCalendarArea" class="mt-4 pt-4 border-t border-emerald-400/50">
+                        <div id="pesqCalendarArea" class="mt-4 pt-4 border-t border-emerald-400/50 hidden">
                             <p class="text-[10px] text-emerald-200 font-semibold uppercase tracking-wider mb-2 text-center">Calendário de Contagem</p>
                             <div id="pesqCalendarGrid" class="flex gap-2 overflow-x-auto pb-2 snap-x calendar-scroll"></div>
-                            
-                            <!-- Legenda do Calendário -->
                             <div class="flex justify-center gap-3 mt-1 text-[9px] text-emerald-100">
                                 <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-emerald-50"></span> Útil</span>
                                 <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-emerald-900/40 border border-emerald-400/30"></span> Fim de Sem.</span>
@@ -320,15 +272,12 @@
         </div>
     </div>
 
-    <!-- Footer/Rodapé posicionado abaixo da calculadora e centralizado -->
-    <div class="mt-6 text-center text-[10px] sm:text-xs font-medium text-slate-500/80">
+    <!-- Footer -->
+    <div class="mt-6 mb-6 text-center text-[10px] sm:text-xs font-medium text-slate-500/80">
         copyright @ 2026 Aldemar Araujo Castro
     </div>
 
     <script>
-        /**
-         * Configuração Inicial: Determinar a data de hoje, formatá-la e exibi-la.
-         */
         const formatDateForDisplay = (date) => {
             const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
             const formatted = date.toLocaleDateString('pt-BR', options);
@@ -336,14 +285,9 @@
         };
 
         const today = new Date();
-        // Zera as horas para evitar problemas de fuso horário ao comparar datas
         today.setHours(0, 0, 0, 0); 
         document.getElementById('todayDisplay').textContent = formatDateForDisplay(today);
 
-        /**
-         * Algoritmo Matemático de Meeus/Jones/Butcher para encontrar a Data da Páscoa
-         * A Páscoa é a base para outros feriados móveis.
-         */
         function getEaster(year) {
             const a = year % 19;
             const b = Math.floor(year / 100);
@@ -357,98 +301,34 @@
             const k = c % 4;
             const l = (32 + 2 * e + 2 * i - h - k) % 7;
             const m = Math.floor((a + 11 * h + 22 * l) / 451);
-            const month = Math.floor((h + l - 7 * m + 114) / 31) - 1; // 0-indexado no JS
+            const month = Math.floor((h + l - 7 * m + 114) / 31) - 1;
             const day = ((h + l - 7 * m + 114) % 31) + 1;
             return new Date(year, month, day);
         }
 
-        /**
-         * Função que gera a lista completa de feriados de um ano específico
-         * (Feriados Nacionais Fixos + Alagoas Fixos + Feriados Móveis baseados na Páscoa)
-         */
         function getHolidaysForYear(year) {
-            // Mês (0-11) e Dia. 
-            // Inclui feriados Nacionais BR + Feriados do Estado de Alagoas.
             const fixedHolidays = [
-                { month: 0, day: 1 },   // 01 Jan: Confraternização Universal
-                { month: 3, day: 21 },  // 21 Abr: Tiradentes
-                { month: 4, day: 1 },   // 01 Mai: Dia do Trabalho
-                { month: 5, day: 24 },  // 24 Jun: São João (Alagoas)
-                { month: 5, day: 29 },  // 29 Jun: São Pedro (Alagoas)
-                { month: 8, day: 7 },   // 07 Set: Independência do Brasil
-                { month: 8, day: 16 },  // 16 Set: Emancipação de Alagoas
-                { month: 9, day: 12 },  // 12 Out: Nossa Senhora Aparecida
-                { month: 10, day: 2 },  // 02 Nov: Finados
-                { month: 10, day: 15 }, // 15 Nov: Proclamação da República
-                { month: 10, day: 20 }, // 20 Nov: Consciência Negra (Nacional/Estadual)
-                { month: 11, day: 25 }  // 25 Dez: Natal
+                { month: 0, day: 1 }, { month: 3, day: 21 }, { month: 4, day: 1 },
+                { month: 5, day: 24 }, { month: 5, day: 29 }, { month: 8, day: 7 },
+                { month: 8, day: 16 }, { month: 9, day: 12 }, { month: 10, day: 2 },
+                { month: 10, day: 15 }, { month: 10, day: 20 }, { month: 11, day: 25 }
             ];
 
-            // Converte todos os fixos para timestamp
             const holidays = fixedHolidays.map(h => new Date(year, h.month, h.day).getTime());
 
-            // Calcula os feriados Móveis derivados da Páscoa
             const easter = getEaster(year);
-            
-            const carnaval = new Date(easter); 
-            carnaval.setDate(carnaval.getDate() - 47); // Terça-feira de Carnaval
-            
-            const sextaSanta = new Date(easter); 
-            sextaSanta.setDate(sextaSanta.getDate() - 2); // Paixão de Cristo
-            
-            const corpusChristi = new Date(easter); 
-            corpusChristi.setDate(corpusChristi.getDate() + 60); // Quinta de Corpus Christi
+            const carnaval = new Date(easter); carnaval.setDate(carnaval.getDate() - 47);
+            const sextaSanta = new Date(easter); sextaSanta.setDate(sextaSanta.getDate() - 2);
+            const corpusChristi = new Date(easter); corpusChristi.setDate(corpusChristi.getDate() + 60);
 
             holidays.push(carnaval.getTime(), sextaSanta.getTime(), corpusChristi.getTime());
             return holidays;
         }
 
-        // Formatação solicitada para o resultado: Uso de barras clássico ex: "05/05/2026"
         const formatCompactDate = (date) => {
             return date.toLocaleDateString('pt-BR');
         };
 
-        /**
-         * Motor da Calculadora de Período
-         * Regra Oficial: Exclui o dia de início (D1) e inclui o dia do fim (D2).
-         */
-        function calcularPeriodo(dataInicio, dataFim) {
-            let businessDays = 0;
-            let currentDate = new Date(dataInicio);
-            
-            // Avançamos para o dia SEGUINTE à submissão para começar a contar
-            currentDate.setDate(currentDate.getDate() + 1); 
-
-            // Objeto para armazenar feriados já calculados em memória (Melhora performance)
-            const holidaysCache = {};
-
-            // Laço de repetição: do dia de início+1 até o exato dia do fim (inclusive)
-            while (currentDate <= dataFim) {
-                const year = currentDate.getFullYear();
-                
-                if (!holidaysCache[year]) {
-                    holidaysCache[year] = getHolidaysForYear(year);
-                }
-
-                const dayOfWeek = currentDate.getDay();
-                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // 0=Domingo, 6=Sábado
-                const isHoliday = holidaysCache[year].includes(currentDate.getTime());
-
-                // Se não for fim de semana E não for feriado, é dia útil!
-                if (!isWeekend && !isHoliday) {
-                    businessDays++;
-                }
-
-                // Incrementa a data para o próximo dia no laço
-                currentDate.setDate(currentDate.getDate() + 1);
-                // Força as horas a zero para não ter desvios durante Horário de Verão ou Leap seconds
-                currentDate.setHours(0,0,0,0);
-            }
-
-            return businessDays;
-        }
-
-        // Transforma a String do Input HTML ("YYYY-MM-DD") num objeto Date puro
         function parseDate(inputVal) {
             if (!inputVal) return null;
             const parts = inputVal.split('-');
@@ -457,13 +337,12 @@
             return d;
         }
 
-        /**
-         * Função para adiantar datas de término (Envio) que caiam 
-         * em finais de semana ou feriados para o próximo dia útil.
-         */
+        // Estende a data para o próximo dia útil se for FDS ou Feriado
         function getNextBusinessDay(dateObj) {
+            if (!dateObj) return null;
             let d = new Date(dateObj.getTime());
             const holidaysCache = {};
+            
             while (true) {
                 const year = d.getFullYear();
                 if (!holidaysCache[year]) holidaysCache[year] = getHolidaysForYear(year);
@@ -472,16 +351,54 @@
                 const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
                 const isHoliday = holidaysCache[year].includes(d.getTime());
                 
-                // Se não for fim de semana E não for feriado, encontramos o dia útil!
                 if (!isWeekend && !isHoliday) {
                     return d;
                 }
-                // Se for, pula para o dia seguinte e verifica de novo
                 d.setDate(d.getDate() + 1);
             }
         }
 
-        // --- GERADOR DE CALENDÁRIOS ---
+        function calcularPeriodo(dataInicio, dataFim) {
+            let businessDays = 0;
+            let currentDate = new Date(dataInicio);
+            currentDate.setDate(currentDate.getDate() + 1); // Começa a contar dia seguinte
+
+            const holidaysCache = {};
+
+            while (currentDate <= dataFim) {
+                const year = currentDate.getFullYear();
+                if (!holidaysCache[year]) holidaysCache[year] = getHolidaysForYear(year);
+
+                const dayOfWeek = currentDate.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const isHoliday = holidaysCache[year].includes(currentDate.getTime());
+
+                if (!isWeekend && !isHoliday) businessDays++;
+
+                currentDate.setDate(currentDate.getDate() + 1);
+                currentDate.setHours(0,0,0,0);
+            }
+
+            return businessDays;
+        }
+
+        function generateCalendarHTML(periods, theme) {
+            if (!periods || periods.length === 0) return '';
+
+            let minDate = new Date(periods[0].start);
+            let maxDate = new Date(periods[0].end);
+            periods.forEach(p => {
+                if (p.start < minDate) minDate = new Date(p.start);
+                if (p.end > maxDate) maxDate = new Date(p.end);
+            });
+
+            const monthDiff = (maxDate.getFullYear() - minDate.getFullYear()) * 12 + (maxDate.getMonth() - minDate.getMonth());
+            if (monthDiff > 24) return '<div class="text-[10px] text-center w-full py-4 opacity-70">Período muito longo para exibição do calendário (máximo 2 anos).</div>';
+
+            let currentMonth = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+            const endMonth = new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
+
+            let html = '';
             while (currentMonth <= endMonth) {
                 html += buildMonthHtml(currentMonth, periods, theme);
                 currentMonth.setMonth(currentMonth.getMonth() + 1);
@@ -489,7 +406,6 @@
             return html;
         }
 
-        // Construtor interno de cada "tabela" de mês
         function buildMonthHtml(monthDate, periods, theme) {
             const year = monthDate.getFullYear();
             const month = monthDate.getMonth();
@@ -498,43 +414,69 @@
             const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
             const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
-            // Definição das classes do Tailwind conforme a coluna escolhida
             let themeStyles;
             if (theme === 'indigo') {
-                themeStyles = {
-                    valid: 'bg-indigo-100 text-indigo-900 font-bold shadow-sm',
-                    weekend: 'bg-indigo-900/40 text-indigo-200 border border-indigo-400/20',
-                    holiday: 'bg-rose-400 text-white font-bold',
-                    invalid: 'text-indigo-300/30'
-                };
+                themeStyles = { valid: 'bg-indigo-100 text-indigo-900 font-bold shadow-sm', weekend: 'bg-indigo-900/40 text-indigo-200 border border-indigo-400/20', holiday: 'bg-rose-400 text-white font-bold', invalid: 'text-indigo-300/30' };
             } else if (theme === 'emerald') {
-                themeStyles = {
-                    valid: 'bg-emerald-50 text-emerald-900 font-bold shadow-sm',
-                    weekend: 'bg-emerald-900/40 text-emerald-200 border border-emerald-400/20',
-                    holiday: 'bg-rose-400 text-white font-bold',
-                    invalid: 'text-emerald-300/30'
-                };
-            } else if (theme === 'violet') {
-                themeStyles = {
-                    valid: 'bg-violet-100 text-violet-900 font-bold shadow-sm',
-                    weekend: 'bg-violet-900/40 text-violet-200 border border-violet-400/20',
-                    holiday: 'bg-rose-400 text-white font-bold',
-                    invalid: 'text-violet-300/30'
-                };
+                themeStyles = { valid: 'bg-emerald-50 text-emerald-900 font-bold shadow-sm', weekend: 'bg-emerald-900/40 text-emerald-200 border border-emerald-400/20', holiday: 'bg-rose-400 text-white font-bold', invalid: 'text-emerald-300/30' };
+            } else {
+                themeStyles = { valid: 'bg-violet-100 text-violet-900 font-bold shadow-sm', weekend: 'bg-violet-900/40 text-violet-200 border border-violet-400/20', holiday: 'bg-rose-400 text-white font-bold', invalid: 'text-violet-300/30' };
             }
 
             let gridHtml = `<div class="min-w-[135px] p-2 rounded-xl bg-white/10 snap-center border border-white/5 shrink-0">`;
             gridHtml += `<div class="text-center font-bold text-[10px] mb-1.5 opacity-90">${monthNames[month]} ${year}</div>`;
-                gridHtml += `<div class="text-center rounded-[3px] py-[2px] text-[9px] ${cellClass}">${d}</div>`;
+            
+            gridHtml += `<div class="grid grid-cols-7 gap-0.5 mb-1">`;
+            weekdays.forEach(d => gridHtml += `<div class="text-center text-[8px] font-bold opacity-60">${d}</div>`);
+            gridHtml += `</div><div class="grid grid-cols-7 gap-0.5">`;
+
+            for (let i = 0; i < firstDayOfWeek; i++) {
+                gridHtml += `<div></div>`;
+            }
+
+            const holidays = getHolidaysForYear(year);
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                const currentDate = new Date(year, month, d);
+                currentDate.setHours(0,0,0,0);
+                const ts = currentDate.getTime();
+
+                let isCounted = false;
+                periods.forEach(p => {
+                    let countStart = new Date(p.start);
+                    countStart.setDate(countStart.getDate() + 1); // Contagem no visual a partir do dia seguinte
+                    countStart.setHours(0,0,0,0);
+                    let countEnd = new Date(p.end);
+                    countEnd.setHours(0,0,0,0);
+
+                    if (currentDate >= countStart && currentDate <= countEnd) {
+                        isCounted = true;
+                    }
+                });
+
+                let cellClass = `text-center rounded-[3px] py-[2px] text-[9px] `;
+                if (isCounted) {
+                    const dayOfWeek = currentDate.getDay();
+                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                    const isHoliday = holidays.includes(ts);
+
+                    if (isWeekend) cellClass += themeStyles.weekend;
+                    else if (isHoliday) cellClass += themeStyles.holiday;
+                    else cellClass += themeStyles.valid;
+                } else {
+                    cellClass += themeStyles.invalid;
+                }
+
+                gridHtml += `<div class="${cellClass}">${d}</div>`;
             }
             gridHtml += `</div></div>`;
             return gridHtml;
         }
 
-        // --- LÓGICA DA VALIDAÇÃO DOCUMENTAL ---
         function calcularValDoc() {
             const d1 = parseDate(document.getElementById('valDocD1').value);
-            const d2 = parseDate(document.getElementById('valDocD2').value);
+            const o_d2 = parseDate(document.getElementById('valDocD2').value);
+            const d2 = getNextBusinessDay(o_d2); // Prorroga final de semana/feriado
             
             const resultBox = document.getElementById('resultValDoc');
             const totalSpan = document.getElementById('valDocTotalDias');
@@ -545,54 +487,52 @@
             let totalDias = 0;
             let detailsHtml = '';
             let periods = [];
-            let hasAdjustments = false;
+            let hasAdjust = false;
 
             if (d1 && d2) {
-                const ef_d2 = getNextBusinessDay(d2);
-                if (ef_d2 >= d1) {
-                    const dias = calcularPeriodo(d1, ef_d2);
+                if (d2 >= d1) {
+                    const dias = calcularPeriodo(d1, d2);
                     totalDias += dias;
-                    periods.push({start: d1, end: ef_d2});
+                    periods.push({start: d1, end: d2});
                     
-                    let label = formatCompactDate(ef_d2);
-                    if (ef_d2.getTime() !== d2.getTime()) { label += '*'; hasAdjustments = true; }
+                    let labelStr = formatCompactDate(d2);
+                    if (o_d2.getTime() !== d2.getTime()) { labelStr += '*'; hasAdjust = true; }
                     
-                    detailsHtml += `<div class="flex justify-between"><span>Período (${formatCompactDate(d1)} - ${label})</span> <span class="font-bold">${dias} dias</span></div>`;
+                    detailsHtml += `<div class="flex justify-between"><span>Período (${formatCompactDate(d1)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
                 }
             }
 
-            if (hasAdjustments) {
-                detailsHtml += `<div class="text-[9px] text-violet-200/80 mt-2 border-t border-violet-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
-            }
+            if (hasAdjust) detailsHtml += `<div class="text-[9px] text-violet-200 mt-2 border-t border-violet-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
 
             if (detailsHtml !== '') {
                 totalSpan.textContent = totalDias;
                 detailsDiv.innerHTML = detailsHtml;
-                
                 if (periods.length > 0) {
                     calGrid.innerHTML = generateCalendarHTML(periods, 'violet');
                     calArea.classList.remove('hidden');
                 } else {
                     calArea.classList.add('hidden');
                 }
-                
                 resultBox.classList.remove('hidden');
             } else {
                 resultBox.classList.add('hidden');
             }
         }
 
-        // --- LÓGICA DO CEP ---
         function calcularCEP() {
             const d1 = parseDate(document.getElementById('cepD1').value);
-            const d2 = parseDate(document.getElementById('cepD2').value);
+            const o_d2 = parseDate(document.getElementById('cepD2').value);
             const d3 = parseDate(document.getElementById('cepD3').value);
-            const d4 = parseDate(document.getElementById('cepD4').value);
+            const o_d4 = parseDate(document.getElementById('cepD4').value);
             const d5 = parseDate(document.getElementById('cepD5').value);
-            const d6 = parseDate(document.getElementById('cepD6').value);
+            const o_d6 = parseDate(document.getElementById('cepD6').value);
             
+            const d2 = getNextBusinessDay(o_d2);
+            const d4 = getNextBusinessDay(o_d4);
+            const d6 = getNextBusinessDay(o_d6);
+
             const resultBox = document.getElementById('resultCep');
             const totalSpan = document.getElementById('cepTotalDias');
             const detailsDiv = document.getElementById('cepDetails');
@@ -602,92 +542,76 @@
             let totalDias = 0;
             let detailsHtml = '';
             let periods = [];
-            let hasAdjustments = false; // Flag para avisar sobre os finais de semana
+            let hasAdjust = false;
 
-            // Trecho 1
             if (d1 && d2) {
-                const ef_d2 = getNextBusinessDay(d2); // Aplica a regra de prorrogação
-                if (ef_d2 >= d1) {
-                    const diasT1 = calcularPeriodo(d1, ef_d2);
-                    totalDias += diasT1;
-                    periods.push({start: d1, end: ef_d2});
-                    
-                    let label = formatCompactDate(ef_d2);
-                    if (ef_d2.getTime() !== d2.getTime()) { label += '*'; hasAdjustments = true; }
-                    
-                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${label})</span> <span class="font-bold">${diasT1} dias</span></div>`;
+                if (d2 >= d1) {
+                    const dias = calcularPeriodo(d1, d2);
+                    totalDias += dias;
+                    periods.push({start: d1, end: d2});
+                    let labelStr = formatCompactDate(d2);
+                    if (o_d2.getTime() !== d2.getTime()) { labelStr += '*'; hasAdjust = true; }
+                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
                 }
             }
 
-            // Trecho 2
             if (d3 && d4) {
-                const ef_d4 = getNextBusinessDay(d4);
-                if (ef_d4 >= d3) {
-                    const diasT2 = calcularPeriodo(d3, ef_d4);
-                    totalDias += diasT2;
-                    periods.push({start: d3, end: ef_d4});
-                    
-                    let label = formatCompactDate(ef_d4);
-                    if (ef_d4.getTime() !== d4.getTime()) { label += '*'; hasAdjustments = true; }
-                    
-                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${label})</span> <span class="font-bold">${diasT2} dias</span></div>`;
+                if (d4 >= d3) {
+                    const dias = calcularPeriodo(d3, d4);
+                    totalDias += dias;
+                    periods.push({start: d3, end: d4});
+                    let labelStr = formatCompactDate(d4);
+                    if (o_d4.getTime() !== d4.getTime()) { labelStr += '*'; hasAdjust = true; }
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
                 }
             }
 
-            // Trecho 3
             if (d5 && d6) {
-                const ef_d6 = getNextBusinessDay(d6);
-                if (ef_d6 >= d5) {
-                    const diasT3 = calcularPeriodo(d5, ef_d6);
-                    totalDias += diasT3;
-                    periods.push({start: d5, end: ef_d6});
-                    
-                    let label = formatCompactDate(ef_d6);
-                    if (ef_d6.getTime() !== d6.getTime()) { label += '*'; hasAdjustments = true; }
-                    
-                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${label})</span> <span class="font-bold">${diasT3} dias</span></div>`;
+                if (d6 >= d5) {
+                    const dias = calcularPeriodo(d5, d6);
+                    totalDias += dias;
+                    periods.push({start: d5, end: d6});
+                    let labelStr = formatCompactDate(d6);
+                    if (o_d6.getTime() !== d6.getTime()) { labelStr += '*'; hasAdjust = true; }
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200 mt-1">A Data 6 deve ser posterior à Data 5.</div>`;
                 }
             }
 
-            // Legenda explicativa se houve prorrogação
-            if (hasAdjustments) {
-                detailsHtml += `<div class="text-[9px] text-indigo-300 mt-2 border-t border-indigo-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
-            }
+            if (hasAdjust) detailsHtml += `<div class="text-[9px] text-indigo-300 mt-2 border-t border-indigo-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
 
-            // Se algo foi processado, mostrar na tela
             if (detailsHtml !== '') {
                 totalSpan.textContent = totalDias;
                 detailsDiv.innerHTML = detailsHtml;
-                
-                // Pedir para injetar o HTML do Calendário
                 if (periods.length > 0) {
                     calGrid.innerHTML = generateCalendarHTML(periods, 'indigo');
                     calArea.classList.remove('hidden');
                 } else {
                     calArea.classList.add('hidden');
                 }
-                
                 resultBox.classList.remove('hidden');
             } else {
                 resultBox.classList.add('hidden');
             }
         }
 
-        // --- LÓGICA DO PESQUISADOR ---
         function calcularPesquisador() {
             const d1 = parseDate(document.getElementById('pesqD1').value);
-            const d2 = parseDate(document.getElementById('pesqD2').value);
+            const o_d2 = parseDate(document.getElementById('pesqD2').value);
             const d3 = parseDate(document.getElementById('pesqD3').value);
-            const d4 = parseDate(document.getElementById('pesqD4').value);
+            const o_d4 = parseDate(document.getElementById('pesqD4').value);
             const d5 = parseDate(document.getElementById('pesqD5').value);
-            const d6 = parseDate(document.getElementById('pesqD6').value);
+            const o_d6 = parseDate(document.getElementById('pesqD6').value);
             
+            const d2 = getNextBusinessDay(o_d2);
+            const d4 = getNextBusinessDay(o_d4);
+            const d6 = getNextBusinessDay(o_d6);
+
             const resultBox = document.getElementById('resultPesq');
             const totalSpan = document.getElementById('pesqTotalDias');
             const detailsDiv = document.getElementById('pesqDetails');
@@ -697,142 +621,115 @@
             let totalDias = 0;
             let detailsHtml = '';
             let periods = [];
-            let hasAdjustments = false;
+            let hasAdjust = false;
 
-            // Trecho 1
             if (d1 && d2) {
-                const ef_d2 = getNextBusinessDay(d2);
-                if (ef_d2 >= d1) {
-                    const diasT1 = calcularPeriodo(d1, ef_d2);
-                    totalDias += diasT1;
-                    periods.push({start: d1, end: ef_d2});
-                    
-                    let label = formatCompactDate(ef_d2);
-                    if (ef_d2.getTime() !== d2.getTime()) { label += '*'; hasAdjustments = true; }
-                    
-                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${label})</span> <span class="font-bold">${diasT1} dias</span></div>`;
+                if (d2 >= d1) {
+                    const dias = calcularPeriodo(d1, d2);
+                    totalDias += dias;
+                    periods.push({start: d1, end: d2});
+                    let labelStr = formatCompactDate(d2);
+                    if (o_d2.getTime() !== d2.getTime()) { labelStr += '*'; hasAdjust = true; }
+                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
                 }
             }
 
-            // Trecho 2
             if (d3 && d4) {
-                const ef_d4 = getNextBusinessDay(d4);
-                if (ef_d4 >= d3) {
-                    const diasT2 = calcularPeriodo(d3, ef_d4);
-                    totalDias += diasT2;
-                    periods.push({start: d3, end: ef_d4});
-                    
-                    let label = formatCompactDate(ef_d4);
-                    if (ef_d4.getTime() !== d4.getTime()) { label += '*'; hasAdjustments = true; }
-                    
-                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${label})</span> <span class="font-bold">${diasT2} dias</span></div>`;
+                if (d4 >= d3) {
+                    const dias = calcularPeriodo(d3, d4);
+                    totalDias += dias;
+                    periods.push({start: d3, end: d4});
+                    let labelStr = formatCompactDate(d4);
+                    if (o_d4.getTime() !== d4.getTime()) { labelStr += '*'; hasAdjust = true; }
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
                 }
             }
 
-            // Trecho 3
             if (d5 && d6) {
-                const ef_d6 = getNextBusinessDay(d6);
-                if (ef_d6 >= d5) {
-                    const diasT3 = calcularPeriodo(d5, ef_d6);
-                    totalDias += diasT3;
-                    periods.push({start: d5, end: ef_d6});
-                    
-                    let label = formatCompactDate(ef_d6);
-                    if (ef_d6.getTime() !== d6.getTime()) { label += '*'; hasAdjustments = true; }
-                    
-                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${label})</span> <span class="font-bold">${diasT3} dias</span></div>`;
+                if (d6 >= d5) {
+                    const dias = calcularPeriodo(d5, d6);
+                    totalDias += dias;
+                    periods.push({start: d5, end: d6});
+                    let labelStr = formatCompactDate(d6);
+                    if (o_d6.getTime() !== d6.getTime()) { labelStr += '*'; hasAdjust = true; }
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200 mt-1">A Data 6 deve ser posterior à Data 5.</div>`;
                 }
             }
 
-            // Legenda explicativa
-            if (hasAdjustments) {
-                detailsHtml += `<div class="text-[9px] text-emerald-100/70 mt-2 border-t border-emerald-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
-            }
+            if (hasAdjust) detailsHtml += `<div class="text-[9px] text-emerald-100/70 mt-2 border-t border-emerald-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
 
             if (detailsHtml !== '') {
                 totalSpan.textContent = totalDias;
                 detailsDiv.innerHTML = detailsHtml;
-                
                 if (periods.length > 0) {
                     calGrid.innerHTML = generateCalendarHTML(periods, 'emerald');
                     calArea.classList.remove('hidden');
                 } else {
                     calArea.classList.add('hidden');
                 }
-
                 resultBox.classList.remove('hidden');
             } else {
                 resultBox.classList.add('hidden');
             }
         }
 
-        // ==========================================
-        // VÍNCULOS E GATILHOS DOS INPUTS (EVENTOS)
-        // ==========================================
-
-        // Campos Validação Documental
+        
+        // --- Validação Documental Eventos ---
         document.getElementById('valDocD1').addEventListener('change', calcularValDoc);
         document.getElementById('valDocD2').addEventListener('change', (e) => {
-            // Automação: Sincroniza a Data 2 da Validação para a Data 1 do CEP
-            document.getElementById('cepD1').value = e.target.value;
+            document.getElementById('cepD1').value = e.target.value; // Sync to CEP D1
             calcularValDoc();
             calcularCEP();
         });
 
-        // Campos do CEP sem vínculos de espelho
+        // --- CEP Eventos ---
         ['cepD1', 'cepD3', 'cepD5'].forEach(id => {
             document.getElementById(id).addEventListener('change', calcularCEP);
         });
 
-        // Automação: Sincroniza a Data 2 do CEP para a Data 1 do Pesquisador
         document.getElementById('cepD2').addEventListener('change', (e) => {
-            document.getElementById('pesqD1').value = e.target.value;
+            document.getElementById('pesqD1').value = e.target.value; // Sync to Pesq D1
             calcularCEP();
             calcularPesquisador();
         });
 
-        // Automação: Sincroniza a Data 4 do CEP para a Data 3 do Pesquisador
         document.getElementById('cepD4').addEventListener('change', (e) => {
-            document.getElementById('pesqD3').value = e.target.value;
+            document.getElementById('pesqD3').value = e.target.value; // Sync to Pesq D3
             calcularCEP();
             calcularPesquisador();
         });
 
-        // Automação: Sincroniza a Data 6 do CEP para a Data 5 do Pesquisador
         document.getElementById('cepD6').addEventListener('change', (e) => {
-            document.getElementById('pesqD5').value = e.target.value;
+            document.getElementById('pesqD5').value = e.target.value; // Sync to Pesq D5
             calcularCEP();
             calcularPesquisador();
         });
 
-        // Automação: Sincroniza a Data 2 do Pesquisador para a Data 3 do CEP
-        document.getElementById('pesqD2').addEventListener('change', (e) => {
-            document.getElementById('cepD3').value = e.target.value;
-            calcularCEP();
-            calcularPesquisador();
-        });
-
-        // Automação: Sincroniza a Data 4 do Pesquisador para a Data 5 do CEP
-        document.getElementById('pesqD4').addEventListener('change', (e) => {
-            document.getElementById('cepD5').value = e.target.value;
-            calcularCEP();
-            calcularPesquisador();
-        });
-
-        // Campos do Pesquisador (sem pesqD2 e pesqD4, que agora têm suas automações próprias acima)
-        ['pesqD1', 'pesqD3', 'pesqD5', 'pesqD6'].forEach(id => {
+        // --- Pesquisador Eventos ---
+        ['pesqD1', 'pesqD3', 'pesqD5'].forEach(id => {
             document.getElementById(id).addEventListener('change', calcularPesquisador);
         });
 
-        /**
-         * Função para limpar todos os campos e resetar a interface
-         */
+        document.getElementById('pesqD2').addEventListener('change', (e) => {
+            document.getElementById('cepD3').value = e.target.value; // Sync to CEP D3
+            calcularPesquisador();
+            calcularCEP();
+        });
+
+        document.getElementById('pesqD4').addEventListener('change', (e) => {
+            document.getElementById('cepD5').value = e.target.value; // Sync to CEP D5
+            calcularPesquisador();
+            calcularCEP();
+        });
+
+        document.getElementById('pesqD6').addEventListener('change', calcularPesquisador);
+
         function limparDados() {
             const campos = [
                 'valDocD1', 'valDocD2',
@@ -845,137 +742,59 @@
             calcularPesquisador();
         }
 
-        /**
-         * Função para gerar o texto formatado e copiá-lo para a área de transferência
-         */
         function copiarDados() {
             let texto = "--- RESUMO DE PRAZOS ---\n\n";
             let temDados = false;
+            let geralAdjust = false;
 
-            // Auxiliar para pegar datas
-            const getD = (id) => parseDate(document.getElementById(id).value);
+            // Func Auxiliar para Cópias
+            const getAndFormat = (id1, id2, titulo, descricoes) => {
+                let d1 = parseDate(document.getElementById(id1).value);
+                let o_d2 = parseDate(document.getElementById(id2).value);
+                let d2 = getNextBusinessDay(o_d2);
+                
+                if (d1 && d2 && d2 >= d1) {
+                    const dias = calcularPeriodo(d1, d2);
+                    let str = formatCompactDate(d2);
+                    if (o_d2.getTime() !== d2.getTime()) { str += '*'; geralAdjust = true; }
+                    return `- ${titulo}: ${formatCompactDate(d1)} a ${str} (${dias} dias úteis)\n`;
+                }
+                return "";
+            };
 
-            // --- Analisando Validação Documental ---
-            const vd1 = getD('valDocD1'), o_vd2 = getD('valDocD2');
-            const vd2 = o_vd2 ? getNextBusinessDay(o_vd2) : null;
-            
-            let valDocText = "[ VALIDAÇÃO DOCUMENTAL ]\n";
-            let hasValDoc = false;
-            let hasAdjusts = false;
-
-            if (vd1 && vd2 && vd2 >= vd1) {
-                const dias = calcularPeriodo(vd1, vd2);
-                const adj = (vd2.getTime() !== o_vd2.getTime()) ? '*' : '';
-                if (adj) hasAdjusts = true;
-                valDocText += `- Período: ${formatCompactDate(vd1)} a ${formatCompactDate(vd2)}${adj} (${dias} dias úteis)\n`;
-                hasValDoc = true;
-            }
-
-            if (hasValDoc) {
-                texto += valDocText + "\n";
+            // Validação Documental
+            let tVal = getAndFormat('valDocD1', 'valDocD2', 'Período', []);
+            if (tVal) {
+                texto += "[ VALIDAÇÃO DOCUMENTAL ]\n" + tVal + "\n";
                 temDados = true;
             }
 
-            // --- Analisando CEP ---
-            const cd1 = getD('cepD1'), o_cd2 = getD('cepD2');
-            const cd3 = getD('cepD3'), o_cd4 = getD('cepD4');
-            const cd5 = getD('cepD5'), o_cd6 = getD('cepD6');
-
-            // Aplica a regra de extensão do fds
-            const cd2 = o_cd2 ? getNextBusinessDay(o_cd2) : null;
-            const cd4 = o_cd4 ? getNextBusinessDay(o_cd4) : null;
-            const cd6 = o_cd6 ? getNextBusinessDay(o_cd6) : null;
-
-            let cepTotal = 0;
-            let cepText = "[ DATAS DO CEP ]\n";
-            let hasCep = false;
-            let hasAdjusts = false;
-
-            if (cd1 && cd2 && cd2 >= cd1) {
-                const dias = calcularPeriodo(cd1, cd2);
-                cepTotal += dias;
-                const adj = (cd2.getTime() !== o_cd2.getTime()) ? '*' : '';
-                if (adj) hasAdjusts = true;
-                cepText += `- 1º Trecho: ${formatCompactDate(cd1)} a ${formatCompactDate(cd2)}${adj} (${dias} dias úteis)\n`;
-                hasCep = true;
-            }
-            if (cd3 && cd4 && cd4 >= cd3) {
-                const dias = calcularPeriodo(cd3, cd4);
-                cepTotal += dias;
-                const adj = (cd4.getTime() !== o_cd4.getTime()) ? '*' : '';
-                if (adj) hasAdjusts = true;
-                cepText += `- 2º Trecho: ${formatCompactDate(cd3)} a ${formatCompactDate(cd4)}${adj} (${dias} dias úteis)\n`;
-                hasCep = true;
-            }
-            if (cd5 && cd6 && cd6 >= cd5) {
-                const dias = calcularPeriodo(cd5, cd6);
-                cepTotal += dias;
-                const adj = (cd6.getTime() !== o_cd6.getTime()) ? '*' : '';
-                if (adj) hasAdjusts = true;
-                cepText += `- 3º Trecho: ${formatCompactDate(cd5)} a ${formatCompactDate(cd6)}${adj} (${dias} dias úteis)\n`;
-                hasCep = true;
-            }
-
-            if (hasCep) {
-                cepText += `-> TOTAL CEP: ${cepTotal} dias úteis\n\n`;
-                texto += cepText;
+            // CEP
+            let cep1 = getAndFormat('cepD1', 'cepD2', '1º Trecho', []);
+            let cep2 = getAndFormat('cepD3', 'cepD4', '2º Trecho', []);
+            let cep3 = getAndFormat('cepD5', 'cepD6', '3º Trecho', []);
+            if (cep1 || cep2 || cep3) {
+                texto += "[ DATAS DO CEP ]\n" + cep1 + cep2 + cep3 + "\n";
                 temDados = true;
             }
 
-            // --- Analisando Pesquisador ---
-            const pd1 = getD('pesqD1'), o_pd2 = getD('pesqD2');
-            const pd3 = getD('pesqD3'), o_pd4 = getD('pesqD4');
-            const pd5 = getD('pesqD5'), o_pd6 = getD('pesqD6');
-
-            // Aplica a regra de extensão do fds
-            const pd2 = o_pd2 ? getNextBusinessDay(o_pd2) : null;
-            const pd4 = o_pd4 ? getNextBusinessDay(o_pd4) : null;
-            const pd6 = o_pd6 ? getNextBusinessDay(o_pd6) : null;
-
-            let pesqTotal = 0;
-            let pesqText = "[ DATAS DO PESQUISADOR ]\n";
-            let hasPesq = false;
-
-            if (pd1 && pd2 && pd2 >= pd1) {
-                const dias = calcularPeriodo(pd1, pd2);
-                pesqTotal += dias;
-                const adj = (pd2.getTime() !== o_pd2.getTime()) ? '*' : '';
-                if (adj) hasAdjusts = true;
-                pesqText += `- 1º Trecho: ${formatCompactDate(pd1)} a ${formatCompactDate(pd2)}${adj} (${dias} dias úteis)\n`;
-                hasPesq = true;
-            }
-            if (pd3 && pd4 && pd4 >= pd3) {
-                const dias = calcularPeriodo(pd3, pd4);
-                pesqTotal += dias;
-                const adj = (pd4.getTime() !== o_pd4.getTime()) ? '*' : '';
-                if (adj) hasAdjusts = true;
-                pesqText += `- 2º Trecho: ${formatCompactDate(pd3)} a ${formatCompactDate(pd4)}${adj} (${dias} dias úteis)\n`;
-                hasPesq = true;
-            }
-            if (pd5 && pd6 && pd6 >= pd5) {
-                const dias = calcularPeriodo(pd5, pd6);
-                pesqTotal += dias;
-                const adj = (pd6.getTime() !== o_pd6.getTime()) ? '*' : '';
-                if (adj) hasAdjusts = true;
-                pesqText += `- 3º Trecho: ${formatCompactDate(pd5)} a ${formatCompactDate(pd6)}${adj} (${dias} dias úteis)\n`;
-                hasPesq = true;
-            }
-
-            if (hasPesq) {
-                pesqText += `-> TOTAL PESQUISADOR: ${pesqTotal} dias úteis\n`;
-                texto += pesqText;
+            // Pesquisador
+            let pesq1 = getAndFormat('pesqD1', 'pesqD2', '1º Trecho', []);
+            let pesq2 = getAndFormat('pesqD3', 'pesqD4', '2º Trecho', []);
+            let pesq3 = getAndFormat('pesqD5', 'pesqD6', '3º Trecho', []);
+            if (pesq1 || pesq2 || pesq3) {
+                texto += "[ DATAS DO PESQUISADOR ]\n" + pesq1 + pesq2 + pesq3 + "\n";
                 temDados = true;
             }
 
-            if (hasAdjusts && temDados) {
-                texto += `\n(* Data estendida para o próximo dia útil na contagem)`;
+            if (geralAdjust && temDados) {
+                texto += "(* Data estendida para o próximo dia útil na contagem)";
             }
 
             if (!temDados) {
                 texto = "Nenhum prazo foi preenchido corretamente para cópia.";
             }
 
-            // Executa a cópia
             const textarea = document.createElement('textarea');
             textarea.value = texto;
             textarea.setAttribute('readonly', '');
@@ -986,20 +805,16 @@
             
             try {
                 document.execCommand('copy');
-                // Altera o texto do botão para dar feedback visual
                 const btnCopyText = document.getElementById('btnCopyText');
                 const originalText = btnCopyText.innerText;
                 btnCopyText.innerText = 'Copiado!';
-                setTimeout(() => {
-                    btnCopyText.innerText = originalText;
-                }, 2000);
+                setTimeout(() => { btnCopyText.innerText = originalText; }, 2000);
             } catch (err) {
                 console.error('Erro ao copiar os dados: ', err);
             }
             
             document.body.removeChild(textarea);
         }
-
     </script>
 </body>
 </html>
