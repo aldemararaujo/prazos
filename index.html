@@ -86,6 +86,56 @@
                 </div>
             </div>
 
+            <!-- =============== SEÇÃO SUPERIOR: VALIDAÇÃO DOCUMENTAL (Violeta) =============== -->
+            <div class="mb-6 bg-violet-50/40 rounded-2xl p-4 sm:p-5 border border-violet-100">
+                
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600">
+                        <!-- Icone de Documento Check -->
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" clip-rule="evenodd"></path><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <h2 class="text-lg font-bold text-violet-900">Avaliação Documental</h2>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="p-3 bg-white rounded-xl shadow-md border-2 border-violet-300">
+                        <p class="text-[10px] font-bold text-violet-600 uppercase tracking-wider mb-2">Trecho de Validação</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Data 1 (Recepção)</label>
+                                <input type="date" id="valDocD1" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-200 focus:border-violet-400 outline-none text-gray-700 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 mb-1">Data 2 (Envio / Parecer Liberado)</label>
+                                <input type="date" id="valDocD2" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-200 focus:border-violet-400 outline-none text-gray-700 text-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="resultValDoc" class="mt-4 bg-violet-600 text-white rounded-xl p-4 shadow-lg shadow-violet-200 hidden fade-in">
+                    <p class="text-xs text-violet-200 font-semibold uppercase tracking-wider mb-1">Tempo Total na Validação</p>
+                    
+                    <div class="flex items-baseline gap-1">
+                        <span class="text-4xl font-black" id="valDocTotalDias">0</span>
+                        <span class="text-sm text-violet-100 font-medium">dias úteis</span>
+                    </div>
+                    
+                    <div id="valDocDetails" class="mt-3 pt-3 border-t border-violet-500/50 text-xs text-violet-100 space-y-1"></div>
+                    
+                    <div id="valDocCalendarArea" class="mt-4 pt-4 border-t border-violet-500/50">
+                        <p class="text-[10px] text-violet-200 font-semibold uppercase tracking-wider mb-2 text-center">Calendário de Contagem</p>
+                        <div id="valDocCalendarGrid" class="flex gap-2 overflow-x-auto pb-2 snap-x calendar-scroll"></div>
+                        
+                        <div class="flex justify-center gap-3 mt-1 text-[9px] text-violet-200">
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-violet-100"></span> Útil</span>
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-violet-900/40 border border-violet-400/30"></span> Fim de Sem.</span>
+                            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-[2px] bg-rose-400"></span> Feriado</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 <!-- =============== COLUNA ESQUERDA: CEP (Azul/Índigo) =============== -->
@@ -448,25 +498,92 @@
             const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
             const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 
-            // Definição das classes do Tailwind conforme a coluna (Azul ou Verde)
-            const themeStyles = theme === 'indigo' ? {
-                valid: 'bg-indigo-100 text-indigo-900 font-bold shadow-sm',
-                weekend: 'bg-indigo-900/40 text-indigo-200 border border-indigo-400/20',
-                holiday: 'bg-rose-400 text-white font-bold',
-                invalid: 'text-indigo-300/30'
-            } : {
-                valid: 'bg-emerald-50 text-emerald-900 font-bold shadow-sm',
-                weekend: 'bg-emerald-900/40 text-emerald-200 border border-emerald-400/20',
-                holiday: 'bg-rose-400 text-white font-bold',
-                invalid: 'text-emerald-300/30'
-            };
+            // Definição das classes do Tailwind conforme a coluna escolhida
+            let themeStyles;
+            if (theme === 'indigo') {
+                themeStyles = {
+                    valid: 'bg-indigo-100 text-indigo-900 font-bold shadow-sm',
+                    weekend: 'bg-indigo-900/40 text-indigo-200 border border-indigo-400/20',
+                    holiday: 'bg-rose-400 text-white font-bold',
+                    invalid: 'text-indigo-300/30'
+                };
+            } else if (theme === 'emerald') {
+                themeStyles = {
+                    valid: 'bg-emerald-50 text-emerald-900 font-bold shadow-sm',
+                    weekend: 'bg-emerald-900/40 text-emerald-200 border border-emerald-400/20',
+                    holiday: 'bg-rose-400 text-white font-bold',
+                    invalid: 'text-emerald-300/30'
+                };
+            } else if (theme === 'violet') {
+                themeStyles = {
+                    valid: 'bg-violet-100 text-violet-900 font-bold shadow-sm',
+                    weekend: 'bg-violet-900/40 text-violet-200 border border-violet-400/20',
+                    holiday: 'bg-rose-400 text-white font-bold',
+                    invalid: 'text-violet-300/30'
+                };
+            }
 
             let gridHtml = `<div class="min-w-[135px] p-2 rounded-xl bg-white/10 snap-center border border-white/5 shrink-0">`;
             gridHtml += `<div class="text-center font-bold text-[10px] mb-1.5 opacity-90">${monthNames[month]} ${year}</div>`;
+                gridHtml += `<div class="text-center rounded-[3px] py-[2px] text-[9px] ${cellClass}">${d}</div>`;
+            }
+            gridHtml += `</div></div>`;
+            return gridHtml;
+        }
+
+        // --- LÓGICA DA VALIDAÇÃO DOCUMENTAL ---
+        function calcularValDoc() {
+            const d1 = parseDate(document.getElementById('valDocD1').value);
+            const d2 = parseDate(document.getElementById('valDocD2').value);
             
-            // Header dos dias da semana (Dom, Seg, Ter...)
-            gridHtml += `<div class="grid grid-cols-7 gap-0.5 mb-1">`;
-            weekdays.forEach(d => gridHtml += `<div class="text-center text-[8px] font-bold opacity-60">${d}</div>`);
+            const resultBox = document.getElementById('resultValDoc');
+            const totalSpan = document.getElementById('valDocTotalDias');
+            const detailsDiv = document.getElementById('valDocDetails');
+            const calGrid = document.getElementById('valDocCalendarGrid');
+            const calArea = document.getElementById('valDocCalendarArea');
+            
+            let totalDias = 0;
+            let detailsHtml = '';
+            let periods = [];
+            let hasAdjustments = false;
+
+            if (d1 && d2) {
+                const ef_d2 = getNextBusinessDay(d2);
+                if (ef_d2 >= d1) {
+                    const dias = calcularPeriodo(d1, ef_d2);
+                    totalDias += dias;
+                    periods.push({start: d1, end: ef_d2});
+                    
+                    let label = formatCompactDate(ef_d2);
+                    if (ef_d2.getTime() !== d2.getTime()) { label += '*'; hasAdjustments = true; }
+                    
+                    detailsHtml += `<div class="flex justify-between"><span>Período (${formatCompactDate(d1)} - ${label})</span> <span class="font-bold">${dias} dias</span></div>`;
+                } else {
+                    detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
+                }
+            }
+
+            if (hasAdjustments) {
+                detailsHtml += `<div class="text-[9px] text-violet-200/80 mt-2 border-t border-violet-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
+            }
+
+            if (detailsHtml !== '') {
+                totalSpan.textContent = totalDias;
+                detailsDiv.innerHTML = detailsHtml;
+                
+                if (periods.length > 0) {
+                    calGrid.innerHTML = generateCalendarHTML(periods, 'violet');
+                    calArea.classList.remove('hidden');
+                } else {
+                    calArea.classList.add('hidden');
+                }
+                
+                resultBox.classList.remove('hidden');
+            } else {
+                resultBox.classList.add('hidden');
+            }
+        }
+
         // --- LÓGICA DO CEP ---
         function calcularCEP() {
             const d1 = parseDate(document.getElementById('cepD1').value);
@@ -659,6 +776,15 @@
         // VÍNCULOS E GATILHOS DOS INPUTS (EVENTOS)
         // ==========================================
 
+        // Campos Validação Documental
+        document.getElementById('valDocD1').addEventListener('change', calcularValDoc);
+        document.getElementById('valDocD2').addEventListener('change', (e) => {
+            // Automação: Sincroniza a Data 2 da Validação para a Data 1 do CEP
+            document.getElementById('cepD1').value = e.target.value;
+            calcularValDoc();
+            calcularCEP();
+        });
+
         // Campos do CEP sem vínculos de espelho
         ['cepD1', 'cepD3', 'cepD5'].forEach(id => {
             document.getElementById(id).addEventListener('change', calcularCEP);
@@ -709,10 +835,12 @@
          */
         function limparDados() {
             const campos = [
+                'valDocD1', 'valDocD2',
                 'cepD1', 'cepD2', 'cepD3', 'cepD4', 'cepD5', 'cepD6',
                 'pesqD1', 'pesqD2', 'pesqD3', 'pesqD4', 'pesqD5', 'pesqD6'
             ];
             campos.forEach(id => document.getElementById(id).value = '');
+            calcularValDoc();
             calcularCEP();
             calcularPesquisador();
         }
@@ -726,6 +854,27 @@
 
             // Auxiliar para pegar datas
             const getD = (id) => parseDate(document.getElementById(id).value);
+
+            // --- Analisando Validação Documental ---
+            const vd1 = getD('valDocD1'), o_vd2 = getD('valDocD2');
+            const vd2 = o_vd2 ? getNextBusinessDay(o_vd2) : null;
+            
+            let valDocText = "[ VALIDAÇÃO DOCUMENTAL ]\n";
+            let hasValDoc = false;
+            let hasAdjusts = false;
+
+            if (vd1 && vd2 && vd2 >= vd1) {
+                const dias = calcularPeriodo(vd1, vd2);
+                const adj = (vd2.getTime() !== o_vd2.getTime()) ? '*' : '';
+                if (adj) hasAdjusts = true;
+                valDocText += `- Período: ${formatCompactDate(vd1)} a ${formatCompactDate(vd2)}${adj} (${dias} dias úteis)\n`;
+                hasValDoc = true;
+            }
+
+            if (hasValDoc) {
+                texto += valDocText + "\n";
+                temDados = true;
+            }
 
             // --- Analisando CEP ---
             const cd1 = getD('cepD1'), o_cd2 = getD('cepD2');
