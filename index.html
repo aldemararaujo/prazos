@@ -76,6 +76,17 @@
                 </div>
             </div>
 
+            <!-- Alerta Global de Erro Cronológico -->
+            <div id="avisoGlobal" class="hidden mb-6 bg-rose-50 border border-rose-200 rounded-xl p-4 flex items-start gap-3 fade-in">
+                <div class="text-rose-500 mt-0.5">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-rose-800">Atenção: Inconsistência nas datas</h3>
+                    <p class="text-xs text-rose-600 mt-1">Foram detectadas datas que não seguem a ordem cronológica do processo. Verifique os campos destacados em vermelho (uma etapa posterior não pode ter uma data anterior à etapa que a precede).</p>
+                </div>
+            </div>
+
             <!-- =============== VALIDAÇÃO DOCUMENTAL =============== -->
             <div class="mb-6 bg-violet-50/40 rounded-2xl p-4 sm:p-5 border border-violet-100">
                 <div class="flex items-center gap-2 mb-4">
@@ -86,16 +97,16 @@
                 </div>
 
                 <div class="space-y-4">
-                    <div class="p-3 bg-white rounded-xl shadow-md border-2 border-violet-300">
+                    <div class="p-3 bg-white rounded-xl shadow-md border-2 border-violet-300 transition-colors">
                         <p class="text-[10px] font-bold text-violet-600 uppercase tracking-wider mb-2">Trecho de Validação</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Data 1 (Recepção)</label>
-                                <input type="date" id="valDocD1" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-200 focus:border-violet-400 outline-none text-gray-700 text-sm">
+                                <input type="date" id="valDocD1" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-200 outline-none text-gray-700 text-sm transition-colors">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Data 2 (Aceitação)</label>
-                                <input type="date" id="valDocD2" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-200 focus:border-violet-400 outline-none text-gray-700 text-sm">
+                                <input type="date" id="valDocD2" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-violet-200 outline-none text-gray-700 text-sm transition-colors">
                             </div>
                         </div>
                     </div>
@@ -133,44 +144,47 @@
                     </div>
 
                     <div class="space-y-4">
-                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300">
+                        <!-- Trecho 1 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300 transition-colors">
                             <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mb-2">1º Trecho de Análise</p>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 1 (Aceitação)</label>
-                                    <input type="date" id="cepD1" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="cepD1" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 2 (Parecer liberado)</label>
-                                    <input type="date" id="cepD2" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="cepD2" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300">
+                        <!-- Trecho 2 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300 transition-colors">
                             <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mb-2">2º Trecho de Análise</p>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 3 (Aceitação)</label>
-                                    <input type="date" id="cepD3" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="cepD3" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 4 (Parecer liberado)</label>
-                                    <input type="date" id="cepD4" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="cepD4" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300">
+                        <!-- Trecho 3 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-indigo-300 transition-colors">
                             <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider mb-2">3º Trecho de Análise</p>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 5 (Aceitação)</label>
-                                    <input type="date" id="cepD5" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="cepD5" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 6 (Parecer liberado)</label>
-                                    <input type="date" id="cepD6" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="cepD6" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                             </div>
                         </div>
@@ -206,44 +220,47 @@
                     </div>
 
                     <div class="space-y-4">
-                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400">
+                        <!-- Trecho 1 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400 transition-colors">
                             <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">1º Trecho de Resposta</p>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 1 (Recepção)</label>
-                                    <input type="date" id="pesqD1" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="pesqD1" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 2 (Envio)</label>
-                                    <input type="date" id="pesqD2" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="pesqD2" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400">
+                        <!-- Trecho 2 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400 transition-colors">
                             <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">2º Trecho de Resposta</p>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 3 (Recepção)</label>
-                                    <input type="date" id="pesqD3" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="pesqD3" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 4 (Envio)</label>
-                                    <input type="date" id="pesqD4" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="pesqD4" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400">
+                        <!-- Trecho 3 -->
+                        <div class="p-3 bg-white rounded-xl shadow-md border-2 border-emerald-400 transition-colors">
                             <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-wider mb-2">3º Trecho de Resposta</p>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 5 (Recepção)</label>
-                                    <input type="date" id="pesqD5" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="pesqD5" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Data 6 (Envio)</label>
-                                    <input type="date" id="pesqD6" class="w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 focus:border-emerald-400 outline-none text-gray-700 text-sm">
+                                    <input type="date" id="pesqD6" class="date-input w-full px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 focus:ring-2 focus:ring-emerald-200 outline-none text-gray-700 text-sm transition-colors">
                                 </div>
                             </div>
                         </div>
@@ -288,6 +305,59 @@
         const today = new Date();
         today.setHours(0, 0, 0, 0); 
         document.getElementById('todayDisplay').textContent = formatDateForDisplay(today);
+
+        // Define a data de "hoje" como data máxima para todos os inputs (Bloqueia o futuro)
+        const strHoje = today.toISOString().split('T')[0];
+        document.querySelectorAll('input[type="date"]').forEach(input => {
+            input.setAttribute('max', strHoje);
+        });
+
+        // Cronologia absoluta do fluxo para validação
+        const cronologiaIds = [
+            'valDocD1', 'valDocD2', 'cepD1', 'cepD2', 'pesqD1', 'pesqD2', 
+            'cepD3', 'cepD4', 'pesqD3', 'pesqD4', 'cepD5', 'cepD6', 'pesqD5', 'pesqD6'
+        ];
+
+        function validarOrdemCronologica() {
+            let temErro = false;
+            let currentMaxDate = null;
+
+            // 1. Limpa estilos de erro de todos os inputs
+            cronologiaIds.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.classList.remove('border-rose-500', 'bg-rose-50', 'text-rose-900', 'ring-2', 'ring-rose-200');
+                    el.classList.add('border-gray-200', 'bg-gray-50', 'text-gray-700');
+                }
+            });
+
+            // 2. Verifica a ordem lógica
+            for (let i = 0; i < cronologiaIds.length; i++) {
+                const el = document.getElementById(cronologiaIds[i]);
+                const dataStr = el ? el.value : null;
+
+                if (dataStr) {
+                    const dataAtual = parseDate(dataStr);
+                    
+                    if (currentMaxDate && dataAtual < currentMaxDate) {
+                        // Erro de linha do tempo detectado!
+                        temErro = true;
+                        el.classList.remove('border-gray-200', 'bg-gray-50', 'text-gray-700');
+                        el.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-900', 'ring-2', 'ring-rose-200');
+                    } else {
+                        currentMaxDate = dataAtual; // Atualiza a maior data válida vista até o momento
+                    }
+                }
+            }
+
+            // 3. Exibe ou oculta o Banner Global
+            const avisoGlobal = document.getElementById('avisoGlobal');
+            if (temErro) {
+                avisoGlobal.classList.remove('hidden');
+            } else {
+                avisoGlobal.classList.add('hidden');
+            }
+        }
 
         function getEaster(year) {
             const a = year % 19;
@@ -338,7 +408,7 @@
             return d;
         }
 
-        // Estende a data para o próximo dia útil se for FDS ou Feriado
+        // Estende a data para o próximo dia útil se for FDS ou Feriado (Motor Interno)
         function getNextBusinessDay(dateObj) {
             if (!dateObj) return null;
             let d = new Date(dateObj.getTime());
@@ -445,7 +515,7 @@
                 let isCounted = false;
                 periods.forEach(p => {
                     let countStart = new Date(p.start);
-                    countStart.setDate(countStart.getDate() + 1); // Contagem no visual a partir do dia seguinte
+                    countStart.setDate(countStart.getDate() + 1); // Dia seguinte no visual
                     countStart.setHours(0,0,0,0);
                     let countEnd = new Date(p.end);
                     countEnd.setHours(0,0,0,0);
@@ -474,10 +544,11 @@
             return gridHtml;
         }
 
+        // --- LÓGICA VALIDAÇÃO DOCUMENTAL ---
         function calcularValDoc() {
             const d1 = parseDate(document.getElementById('valDocD1').value);
             const o_d2 = parseDate(document.getElementById('valDocD2').value);
-            const d2 = getNextBusinessDay(o_d2); // Prorroga final de semana/feriado
+            const d2 = getNextBusinessDay(o_d2);
             
             const resultBox = document.getElementById('resultValDoc');
             const totalSpan = document.getElementById('valDocTotalDias');
@@ -516,6 +587,7 @@
             }
         }
 
+        // --- LÓGICA DO CEP ---
         function calcularCEP() {
             const d1 = parseDate(document.getElementById('cepD1').value);
             const o_d2 = parseDate(document.getElementById('cepD2').value);
@@ -586,6 +658,7 @@
             }
         }
 
+        // --- LÓGICA DO PESQUISADOR ---
         function calcularPesquisador() {
             const d1 = parseDate(document.getElementById('pesqD1').value);
             const o_d2 = parseDate(document.getElementById('pesqD2').value);
@@ -657,73 +730,77 @@
         }
 
         
-        // --- Validação Documental Eventos ---
-        document.getElementById('valDocD1').addEventListener('change', calcularValDoc);
-        document.getElementById('valDocD2').addEventListener('change', (e) => {
-            document.getElementById('cepD1').value = e.target.value; // Sync to CEP D1
-            calcularValDoc();
-            calcularCEP();
+        // --- LISTENERS COM AUTO-SINC E VALIDAÇÃO GLOBAL ---
+        document.querySelectorAll('.date-input').forEach(input => {
+            input.addEventListener('change', validarOrdemCronologica);
         });
 
-        // --- CEP Eventos ---
+        document.getElementById('valDocD1').addEventListener('change', calcularValDoc);
+        document.getElementById('valDocD2').addEventListener('change', (e) => {
+            document.getElementById('cepD1').value = e.target.value; 
+            calcularValDoc();
+            calcularCEP();
+            validarOrdemCronologica();
+        });
+
         ['cepD1', 'cepD3', 'cepD5'].forEach(id => {
             document.getElementById(id).addEventListener('change', calcularCEP);
         });
 
         document.getElementById('cepD2').addEventListener('change', (e) => {
-            document.getElementById('pesqD1').value = e.target.value; // Sync to Pesq D1
+            document.getElementById('pesqD1').value = e.target.value; 
             calcularCEP();
             calcularPesquisador();
+            validarOrdemCronologica();
         });
 
         document.getElementById('cepD4').addEventListener('change', (e) => {
-            document.getElementById('pesqD3').value = e.target.value; // Sync to Pesq D3
+            document.getElementById('pesqD3').value = e.target.value; 
             calcularCEP();
             calcularPesquisador();
+            validarOrdemCronologica();
         });
 
         document.getElementById('cepD6').addEventListener('change', (e) => {
-            document.getElementById('pesqD5').value = e.target.value; // Sync to Pesq D5
+            document.getElementById('pesqD5').value = e.target.value; 
             calcularCEP();
             calcularPesquisador();
+            validarOrdemCronologica();
         });
 
-        // --- Pesquisador Eventos ---
         ['pesqD1', 'pesqD3', 'pesqD5'].forEach(id => {
             document.getElementById(id).addEventListener('change', calcularPesquisador);
         });
 
         document.getElementById('pesqD2').addEventListener('change', (e) => {
-            document.getElementById('cepD3').value = e.target.value; // Sync to CEP D3
+            document.getElementById('cepD3').value = e.target.value; 
             calcularPesquisador();
             calcularCEP();
+            validarOrdemCronologica();
         });
 
         document.getElementById('pesqD4').addEventListener('change', (e) => {
-            document.getElementById('cepD5').value = e.target.value; // Sync to CEP D5
+            document.getElementById('cepD5').value = e.target.value; 
             calcularPesquisador();
             calcularCEP();
+            validarOrdemCronologica();
         });
 
         document.getElementById('pesqD6').addEventListener('change', calcularPesquisador);
 
+        // --- BOTÕES GLOBAIS ---
         function limparDados() {
-            const campos = [
-                'valDocD1', 'valDocD2',
-                'cepD1', 'cepD2', 'cepD3', 'cepD4', 'cepD5', 'cepD6',
-                'pesqD1', 'pesqD2', 'pesqD3', 'pesqD4', 'pesqD5', 'pesqD6'
-            ];
-            campos.forEach(id => document.getElementById(id).value = '');
+            document.querySelectorAll('.date-input').forEach(el => el.value = '');
             calcularValDoc();
             calcularCEP();
             calcularPesquisador();
+            validarOrdemCronologica(); // remove erros
         }
 
         function copiarDados() {
             let texto = "--- RESUMO DE PRAZOS ---\n\n";
             let temDados = false;
 
-            // Func Auxiliar para Cópias
             const getAndFormat = (id1, id2, titulo) => {
                 let d1 = parseDate(document.getElementById(id1).value);
                 let o_d2 = parseDate(document.getElementById(id2).value);
