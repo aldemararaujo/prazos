@@ -487,7 +487,6 @@
             let totalDias = 0;
             let detailsHtml = '';
             let periods = [];
-            let hasAdjust = false;
 
             if (d1 && d2) {
                 if (d2 >= d1) {
@@ -495,16 +494,11 @@
                     totalDias += dias;
                     periods.push({start: d1, end: d2});
                     
-                    let labelStr = formatCompactDate(d2);
-                    if (o_d2.getTime() !== d2.getTime()) { labelStr += '*'; hasAdjust = true; }
-                    
-                    detailsHtml += `<div class="flex justify-between"><span>Período (${formatCompactDate(d1)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
+                    detailsHtml += `<div class="flex justify-between"><span>Período (${formatCompactDate(d1)} - ${formatCompactDate(o_d2)})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
                 }
             }
-
-            if (hasAdjust) detailsHtml += `<div class="text-[9px] text-violet-200 mt-2 border-t border-violet-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
 
             if (detailsHtml !== '') {
                 totalSpan.textContent = totalDias;
@@ -542,16 +536,13 @@
             let totalDias = 0;
             let detailsHtml = '';
             let periods = [];
-            let hasAdjust = false;
 
             if (d1 && d2) {
                 if (d2 >= d1) {
                     const dias = calcularPeriodo(d1, d2);
                     totalDias += dias;
                     periods.push({start: d1, end: d2});
-                    let labelStr = formatCompactDate(d2);
-                    if (o_d2.getTime() !== d2.getTime()) { labelStr += '*'; hasAdjust = true; }
-                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
+                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${formatCompactDate(o_d2)})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
                 }
@@ -562,9 +553,7 @@
                     const dias = calcularPeriodo(d3, d4);
                     totalDias += dias;
                     periods.push({start: d3, end: d4});
-                    let labelStr = formatCompactDate(d4);
-                    if (o_d4.getTime() !== d4.getTime()) { labelStr += '*'; hasAdjust = true; }
-                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${formatCompactDate(o_d4)})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
                 }
@@ -575,15 +564,11 @@
                     const dias = calcularPeriodo(d5, d6);
                     totalDias += dias;
                     periods.push({start: d5, end: d6});
-                    let labelStr = formatCompactDate(d6);
-                    if (o_d6.getTime() !== d6.getTime()) { labelStr += '*'; hasAdjust = true; }
-                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${formatCompactDate(o_d6)})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200 mt-1">A Data 6 deve ser posterior à Data 5.</div>`;
                 }
             }
-
-            if (hasAdjust) detailsHtml += `<div class="text-[9px] text-indigo-300 mt-2 border-t border-indigo-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
 
             if (detailsHtml !== '') {
                 totalSpan.textContent = totalDias;
@@ -621,16 +606,13 @@
             let totalDias = 0;
             let detailsHtml = '';
             let periods = [];
-            let hasAdjust = false;
 
             if (d1 && d2) {
                 if (d2 >= d1) {
                     const dias = calcularPeriodo(d1, d2);
                     totalDias += dias;
                     periods.push({start: d1, end: d2});
-                    let labelStr = formatCompactDate(d2);
-                    if (o_d2.getTime() !== d2.getTime()) { labelStr += '*'; hasAdjust = true; }
-                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
+                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${formatCompactDate(o_d2)})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
                 }
@@ -641,9 +623,7 @@
                     const dias = calcularPeriodo(d3, d4);
                     totalDias += dias;
                     periods.push({start: d3, end: d4});
-                    let labelStr = formatCompactDate(d4);
-                    if (o_d4.getTime() !== d4.getTime()) { labelStr += '*'; hasAdjust = true; }
-                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${formatCompactDate(o_d4)})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
                 }
@@ -654,15 +634,11 @@
                     const dias = calcularPeriodo(d5, d6);
                     totalDias += dias;
                     periods.push({start: d5, end: d6});
-                    let labelStr = formatCompactDate(d6);
-                    if (o_d6.getTime() !== d6.getTime()) { labelStr += '*'; hasAdjust = true; }
-                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${labelStr})</span> <span class="font-bold">${dias} dias</span></div>`;
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${formatCompactDate(o_d6)})</span> <span class="font-bold">${dias} dias</span></div>`;
                 } else {
                     detailsHtml += `<div class="text-red-200 mt-1">A Data 6 deve ser posterior à Data 5.</div>`;
                 }
             }
-
-            if (hasAdjust) detailsHtml += `<div class="text-[9px] text-emerald-100/70 mt-2 border-t border-emerald-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
 
             if (detailsHtml !== '') {
                 totalSpan.textContent = totalDias;
@@ -745,50 +721,49 @@
         function copiarDados() {
             let texto = "--- RESUMO DE PRAZOS ---\n\n";
             let temDados = false;
-            let geralAdjust = false;
 
             // Func Auxiliar para Cópias
-            const getAndFormat = (id1, id2, titulo, descricoes) => {
+            const getAndFormat = (id1, id2, titulo) => {
                 let d1 = parseDate(document.getElementById(id1).value);
                 let o_d2 = parseDate(document.getElementById(id2).value);
                 let d2 = getNextBusinessDay(o_d2);
                 
                 if (d1 && d2 && d2 >= d1) {
                     const dias = calcularPeriodo(d1, d2);
-                    let str = formatCompactDate(d2);
-                    if (o_d2.getTime() !== d2.getTime()) { str += '*'; geralAdjust = true; }
-                    return `- ${titulo}: ${formatCompactDate(d1)} a ${str} (${dias} dias úteis)\n`;
+                    return { text: `- ${titulo}: ${formatCompactDate(d1)} a ${formatCompactDate(o_d2)} (${dias} dias úteis)\n`, dias: dias };
                 }
-                return "";
+                return { text: "", dias: 0 };
             };
 
             // Validação Documental
-            let tVal = getAndFormat('valDocD1', 'valDocD2', 'Período', []);
-            if (tVal) {
-                texto += "[ VALIDAÇÃO DOCUMENTAL ]\n" + tVal + "\n";
+            let tVal = getAndFormat('valDocD1', 'valDocD2', 'Período');
+            if (tVal.text) {
+                texto += "[ VALIDAÇÃO DOCUMENTAL ]\n" + tVal.text + "\n";
                 temDados = true;
             }
 
             // CEP
-            let cep1 = getAndFormat('cepD1', 'cepD2', '1º Trecho', []);
-            let cep2 = getAndFormat('cepD3', 'cepD4', '2º Trecho', []);
-            let cep3 = getAndFormat('cepD5', 'cepD6', '3º Trecho', []);
-            if (cep1 || cep2 || cep3) {
-                texto += "[ DATAS DO CEP ]\n" + cep1 + cep2 + cep3 + "\n";
+            let cep1 = getAndFormat('cepD1', 'cepD2', '1º Trecho');
+            let cep2 = getAndFormat('cepD3', 'cepD4', '2º Trecho');
+            let cep3 = getAndFormat('cepD5', 'cepD6', '3º Trecho');
+            let totalCepDias = cep1.dias + cep2.dias + cep3.dias;
+            
+            if (cep1.text || cep2.text || cep3.text) {
+                texto += "[ DATAS DO CEP ]\n" + cep1.text + cep2.text + cep3.text;
+                texto += `> TOTAL DO CEP: ${totalCepDias} dias úteis\n\n`;
                 temDados = true;
             }
 
             // Pesquisador
-            let pesq1 = getAndFormat('pesqD1', 'pesqD2', '1º Trecho', []);
-            let pesq2 = getAndFormat('pesqD3', 'pesqD4', '2º Trecho', []);
-            let pesq3 = getAndFormat('pesqD5', 'pesqD6', '3º Trecho', []);
-            if (pesq1 || pesq2 || pesq3) {
-                texto += "[ DATAS DO PESQUISADOR ]\n" + pesq1 + pesq2 + pesq3 + "\n";
+            let pesq1 = getAndFormat('pesqD1', 'pesqD2', '1º Trecho');
+            let pesq2 = getAndFormat('pesqD3', 'pesqD4', '2º Trecho');
+            let pesq3 = getAndFormat('pesqD5', 'pesqD6', '3º Trecho');
+            let totalPesqDias = pesq1.dias + pesq2.dias + pesq3.dias;
+            
+            if (pesq1.text || pesq2.text || pesq3.text) {
+                texto += "[ DATAS DO PESQUISADOR ]\n" + pesq1.text + pesq2.text + pesq3.text;
+                texto += `> TOTAL DO PESQUISADOR: ${totalPesqDias} dias úteis\n\n`;
                 temDados = true;
-            }
-
-            if (geralAdjust && temDados) {
-                texto += "(* Data estendida para o próximo dia útil na contagem)";
             }
 
             if (!temDados) {
