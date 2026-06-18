@@ -408,30 +408,30 @@
         }
 
         /**
-         * Gera o código HTML que desenha os meses e os quadradinhos do calendário
-         * @param {Array} periods - Lista contendo o inicio/fim dos intervalos
-         * @param {String} theme - Cor do calendário ('indigo' para CEP, 'emerald' para Pesquisador)
+         * Função para adiantar datas de término (Envio) que caiam 
+         * em finais de semana ou feriados para o próximo dia útil.
          */
-        function generateCalendarHTML(periods, theme) {
-            if (!periods || periods.length === 0) return '';
+        function getNextBusinessDay(dateObj) {
+            let d = new Date(dateObj.getTime());
+            const holidaysCache = {};
+            while (true) {
+                const year = d.getFullYear();
+                if (!holidaysCache[year]) holidaysCache[year] = getHolidaysForYear(year);
+                
+                const dayOfWeek = d.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const isHoliday = holidaysCache[year].includes(d.getTime());
+                
+                // Se não for fim de semana E não for feriado, encontramos o dia útil!
+                if (!isWeekend && !isHoliday) {
+                    return d;
+                }
+                // Se for, pula para o dia seguinte e verifica de novo
+                d.setDate(d.getDate() + 1);
+            }
+        }
 
-            // Achar min e max para saber quantos meses desenhar no total
-            let minDate = new Date(periods[0].start);
-            let maxDate = new Date(periods[0].end);
-            periods.forEach(p => {
-                if (p.start < minDate) minDate = new Date(p.start);
-                if (p.end > maxDate) maxDate = new Date(p.end);
-            });
-
-            // Se for um período longo demais (mais de 2 anos), não renderizar para não congelar a aba
-            const monthDiff = (maxDate.getFullYear() - minDate.getFullYear()) * 12 + (maxDate.getMonth() - minDate.getMonth());
-            if (monthDiff > 24) return '<div class="text-[10px] text-center w-full py-4 opacity-70">Período longo demais para renderizar calendário (máx 2 anos).</div>';
-
-            let currentMonth = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
-            const endMonth = new Date(maxDate.getFullYear(), maxDate.getMonth(), 1);
-
-            let html = '';
-            // Roda enquanto os meses não acabarem
+        // --- GERADOR DE CALENDÁRIOS ---
             while (currentMonth <= endMonth) {
                 html += buildMonthHtml(currentMonth, periods, theme);
                 currentMonth.setMonth(currentMonth.getMonth() + 1);
@@ -467,59 +467,7 @@
             // Header dos dias da semana (Dom, Seg, Ter...)
             gridHtml += `<div class="grid grid-cols-7 gap-0.5 mb-1">`;
             weekdays.forEach(d => gridHtml += `<div class="text-center text-[8px] font-bold opacity-60">${d}</div>`);
-            gridHtml += `</div><div class="grid grid-cols-7 gap-0.5">`;
-
-            // Células vazias de alinhamento no começo do mês
-            for (let i = 0; i < firstDayOfWeek; i++) {
-                gridHtml += `<div></div>`;
-            }
-
-            const holidays = getHolidaysForYear(year);
-
-            // Popula os dias do mês de 1 a 28,30 ou 31
-            for (let d = 1; d <= daysInMonth; d++) {
-                const currentDate = new Date(year, month, d);
-                currentDate.setHours(0,0,0,0);
-                const ts = currentDate.getTime();
-
-                // Verifica se essa data específica está sendo englobada no cálculo da ferramenta
-                let isCounted = false;
-                periods.forEach(p => {
-                    let countStart = new Date(p.start);
-                    // A regra fundamental é refletida no calendário: a contagem começa no dia SEGUINTE.
-                    countStart.setDate(countStart.getDate() + 1); 
-                    countStart.setHours(0,0,0,0);
-                    let countEnd = new Date(p.end);
-                    countEnd.setHours(0,0,0,0);
-
-                    if (currentDate >= countStart && currentDate <= countEnd) {
-                        isCounted = true;
-                    }
-                });
-
-                let cellClass = `text-center rounded-[3px] py-[2px] text-[9px] `;
-                if (isCounted) {
-                    const dayOfWeek = currentDate.getDay();
-                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                    const isHoliday = holidays.includes(ts);
-
-                    if (isWeekend) cellClass += themeStyles.weekend;
-                    else if (isHoliday) cellClass += themeStyles.holiday;
-                    else cellClass += themeStyles.valid;
-                } else {
-                    // O dia inicial preenchido pelo usuário (D1/D3) recebe a classe invalid (apagado)
-                    cellClass += themeStyles.invalid;
-                }
-
-                gridHtml += `<div class="${cellClass}">${d}</div>`;
-            }
-            gridHtml += `</div></div>`;
-            return gridHtml;
-        }
-
-        /**
-         * Lida com a coluna CEP, lendo as 4 datas e criando os 2 blocos de resultado.
-         */
+        // --- LÓGICA DO CEP ---
         function calcularCEP() {
             const d1 = parseDate(document.getElementById('cepD1').value);
             const d2 = parseDate(document.getElementById('cepD2').value);
@@ -537,35 +485,62 @@
             let totalDias = 0;
             let detailsHtml = '';
             let periods = [];
+            let hasAdjustments = false; // Flag para avisar sobre os finais de semana
 
-            // Avaliando o Trecho 1 (Data 1 e 2)
-            if (d1 && d2 && d2 >= d1) {
-                const diasT1 = calcularPeriodo(d1, d2);
-                totalDias += diasT1;
-                periods.push({start: d1, end: d2});
-                detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${formatCompactDate(d2)})</span> <span class="font-bold">${diasT1} dias</span></div>`;
-            } else if (d1 && d2 && d2 < d1) {
-                detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
+            // Trecho 1
+            if (d1 && d2) {
+                const ef_d2 = getNextBusinessDay(d2); // Aplica a regra de prorrogação
+                if (ef_d2 >= d1) {
+                    const diasT1 = calcularPeriodo(d1, ef_d2);
+                    totalDias += diasT1;
+                    periods.push({start: d1, end: ef_d2});
+                    
+                    let label = formatCompactDate(ef_d2);
+                    if (ef_d2.getTime() !== d2.getTime()) { label += '*'; hasAdjustments = true; }
+                    
+                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${label})</span> <span class="font-bold">${diasT1} dias</span></div>`;
+                } else {
+                    detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
+                }
             }
 
-            // Avaliando o Trecho 2 (Data 3 e 4)
-            if (d3 && d4 && d4 >= d3) {
-                const diasT2 = calcularPeriodo(d3, d4);
-                totalDias += diasT2;
-                periods.push({start: d3, end: d4});
-                detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${formatCompactDate(d4)})</span> <span class="font-bold">${diasT2} dias</span></div>`;
-            } else if (d3 && d4 && d4 < d3) {
-                detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
+            // Trecho 2
+            if (d3 && d4) {
+                const ef_d4 = getNextBusinessDay(d4);
+                if (ef_d4 >= d3) {
+                    const diasT2 = calcularPeriodo(d3, ef_d4);
+                    totalDias += diasT2;
+                    periods.push({start: d3, end: ef_d4});
+                    
+                    let label = formatCompactDate(ef_d4);
+                    if (ef_d4.getTime() !== d4.getTime()) { label += '*'; hasAdjustments = true; }
+                    
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${label})</span> <span class="font-bold">${diasT2} dias</span></div>`;
+                } else {
+                    detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
+                }
             }
 
-            // Avaliando o Trecho 3 (Data 5 e 6)
-            if (d5 && d6 && d6 >= d5) {
-                const diasT3 = calcularPeriodo(d5, d6);
-                totalDias += diasT3;
-                periods.push({start: d5, end: d6});
-                detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${formatCompactDate(d6)})</span> <span class="font-bold">${diasT3} dias</span></div>`;
-            } else if (d5 && d6 && d6 < d5) {
-                detailsHtml += `<div class="text-red-200 mt-1">A Data 6 deve ser posterior à Data 5.</div>`;
+            // Trecho 3
+            if (d5 && d6) {
+                const ef_d6 = getNextBusinessDay(d6);
+                if (ef_d6 >= d5) {
+                    const diasT3 = calcularPeriodo(d5, ef_d6);
+                    totalDias += diasT3;
+                    periods.push({start: d5, end: ef_d6});
+                    
+                    let label = formatCompactDate(ef_d6);
+                    if (ef_d6.getTime() !== d6.getTime()) { label += '*'; hasAdjustments = true; }
+                    
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${label})</span> <span class="font-bold">${diasT3} dias</span></div>`;
+                } else {
+                    detailsHtml += `<div class="text-red-200 mt-1">A Data 6 deve ser posterior à Data 5.</div>`;
+                }
+            }
+
+            // Legenda explicativa se houve prorrogação
+            if (hasAdjustments) {
+                detailsHtml += `<div class="text-[9px] text-indigo-300 mt-2 border-t border-indigo-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
             }
 
             // Se algo foi processado, mostrar na tela
@@ -587,9 +562,7 @@
             }
         }
 
-        /**
-         * Lida com a coluna Pesquisador, lendo as 4 datas e criando os resultados.
-         */
+        // --- LÓGICA DO PESQUISADOR ---
         function calcularPesquisador() {
             const d1 = parseDate(document.getElementById('pesqD1').value);
             const d2 = parseDate(document.getElementById('pesqD2').value);
@@ -607,35 +580,62 @@
             let totalDias = 0;
             let detailsHtml = '';
             let periods = [];
+            let hasAdjustments = false;
 
-            // Avaliando o Trecho 1 (Data 1 e 2)
-            if (d1 && d2 && d2 >= d1) {
-                const diasT1 = calcularPeriodo(d1, d2);
-                totalDias += diasT1;
-                periods.push({start: d1, end: d2});
-                detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${formatCompactDate(d2)})</span> <span class="font-bold">${diasT1} dias</span></div>`;
-            } else if (d1 && d2 && d2 < d1) {
-                detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
+            // Trecho 1
+            if (d1 && d2) {
+                const ef_d2 = getNextBusinessDay(d2);
+                if (ef_d2 >= d1) {
+                    const diasT1 = calcularPeriodo(d1, ef_d2);
+                    totalDias += diasT1;
+                    periods.push({start: d1, end: ef_d2});
+                    
+                    let label = formatCompactDate(ef_d2);
+                    if (ef_d2.getTime() !== d2.getTime()) { label += '*'; hasAdjustments = true; }
+                    
+                    detailsHtml += `<div class="flex justify-between"><span>Trecho 1 (${formatCompactDate(d1)} - ${label})</span> <span class="font-bold">${diasT1} dias</span></div>`;
+                } else {
+                    detailsHtml += `<div class="text-red-200">A Data 2 deve ser posterior à Data 1.</div>`;
+                }
             }
 
-            // Avaliando o Trecho 2 (Data 3 e 4)
-            if (d3 && d4 && d4 >= d3) {
-                const diasT2 = calcularPeriodo(d3, d4);
-                totalDias += diasT2;
-                periods.push({start: d3, end: d4});
-                detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${formatCompactDate(d4)})</span> <span class="font-bold">${diasT2} dias</span></div>`;
-            } else if (d3 && d4 && d4 < d3) {
-                detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
+            // Trecho 2
+            if (d3 && d4) {
+                const ef_d4 = getNextBusinessDay(d4);
+                if (ef_d4 >= d3) {
+                    const diasT2 = calcularPeriodo(d3, ef_d4);
+                    totalDias += diasT2;
+                    periods.push({start: d3, end: ef_d4});
+                    
+                    let label = formatCompactDate(ef_d4);
+                    if (ef_d4.getTime() !== d4.getTime()) { label += '*'; hasAdjustments = true; }
+                    
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 2 (${formatCompactDate(d3)} - ${label})</span> <span class="font-bold">${diasT2} dias</span></div>`;
+                } else {
+                    detailsHtml += `<div class="text-red-200 mt-1">A Data 4 deve ser posterior à Data 3.</div>`;
+                }
             }
 
-            // Avaliando o Trecho 3 (Data 5 e 6)
-            if (d5 && d6 && d6 >= d5) {
-                const diasT3 = calcularPeriodo(d5, d6);
-                totalDias += diasT3;
-                periods.push({start: d5, end: d6});
-                detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${formatCompactDate(d6)})</span> <span class="font-bold">${diasT3} dias</span></div>`;
-            } else if (d5 && d6 && d6 < d5) {
-                detailsHtml += `<div class="text-red-200 mt-1">A Data 6 deve ser posterior à Data 5.</div>`;
+            // Trecho 3
+            if (d5 && d6) {
+                const ef_d6 = getNextBusinessDay(d6);
+                if (ef_d6 >= d5) {
+                    const diasT3 = calcularPeriodo(d5, ef_d6);
+                    totalDias += diasT3;
+                    periods.push({start: d5, end: ef_d6});
+                    
+                    let label = formatCompactDate(ef_d6);
+                    if (ef_d6.getTime() !== d6.getTime()) { label += '*'; hasAdjustments = true; }
+                    
+                    detailsHtml += `<div class="flex justify-between mt-1"><span>Trecho 3 (${formatCompactDate(d5)} - ${label})</span> <span class="font-bold">${diasT3} dias</span></div>`;
+                } else {
+                    detailsHtml += `<div class="text-red-200 mt-1">A Data 6 deve ser posterior à Data 5.</div>`;
+                }
+            }
+
+            // Legenda explicativa
+            if (hasAdjustments) {
+                detailsHtml += `<div class="text-[9px] text-emerald-100/70 mt-2 border-t border-emerald-400/30 pt-1">* Data estendida para o próximo dia útil.</div>`;
             }
 
             if (detailsHtml !== '') {
@@ -728,30 +728,42 @@
             const getD = (id) => parseDate(document.getElementById(id).value);
 
             // --- Analisando CEP ---
-            const cd1 = getD('cepD1'), cd2 = getD('cepD2');
-            const cd3 = getD('cepD3'), cd4 = getD('cepD4');
-            const cd5 = getD('cepD5'), cd6 = getD('cepD6');
+            const cd1 = getD('cepD1'), o_cd2 = getD('cepD2');
+            const cd3 = getD('cepD3'), o_cd4 = getD('cepD4');
+            const cd5 = getD('cepD5'), o_cd6 = getD('cepD6');
+
+            // Aplica a regra de extensão do fds
+            const cd2 = o_cd2 ? getNextBusinessDay(o_cd2) : null;
+            const cd4 = o_cd4 ? getNextBusinessDay(o_cd4) : null;
+            const cd6 = o_cd6 ? getNextBusinessDay(o_cd6) : null;
 
             let cepTotal = 0;
             let cepText = "[ DATAS DO CEP ]\n";
             let hasCep = false;
+            let hasAdjusts = false;
 
             if (cd1 && cd2 && cd2 >= cd1) {
                 const dias = calcularPeriodo(cd1, cd2);
                 cepTotal += dias;
-                cepText += `- 1º Trecho: ${formatCompactDate(cd1)} a ${formatCompactDate(cd2)} (${dias} dias úteis)\n`;
+                const adj = (cd2.getTime() !== o_cd2.getTime()) ? '*' : '';
+                if (adj) hasAdjusts = true;
+                cepText += `- 1º Trecho: ${formatCompactDate(cd1)} a ${formatCompactDate(cd2)}${adj} (${dias} dias úteis)\n`;
                 hasCep = true;
             }
             if (cd3 && cd4 && cd4 >= cd3) {
                 const dias = calcularPeriodo(cd3, cd4);
                 cepTotal += dias;
-                cepText += `- 2º Trecho: ${formatCompactDate(cd3)} a ${formatCompactDate(cd4)} (${dias} dias úteis)\n`;
+                const adj = (cd4.getTime() !== o_cd4.getTime()) ? '*' : '';
+                if (adj) hasAdjusts = true;
+                cepText += `- 2º Trecho: ${formatCompactDate(cd3)} a ${formatCompactDate(cd4)}${adj} (${dias} dias úteis)\n`;
                 hasCep = true;
             }
             if (cd5 && cd6 && cd6 >= cd5) {
                 const dias = calcularPeriodo(cd5, cd6);
                 cepTotal += dias;
-                cepText += `- 3º Trecho: ${formatCompactDate(cd5)} a ${formatCompactDate(cd6)} (${dias} dias úteis)\n`;
+                const adj = (cd6.getTime() !== o_cd6.getTime()) ? '*' : '';
+                if (adj) hasAdjusts = true;
+                cepText += `- 3º Trecho: ${formatCompactDate(cd5)} a ${formatCompactDate(cd6)}${adj} (${dias} dias úteis)\n`;
                 hasCep = true;
             }
 
@@ -762,9 +774,14 @@
             }
 
             // --- Analisando Pesquisador ---
-            const pd1 = getD('pesqD1'), pd2 = getD('pesqD2');
-            const pd3 = getD('pesqD3'), pd4 = getD('pesqD4');
-            const pd5 = getD('pesqD5'), pd6 = getD('pesqD6');
+            const pd1 = getD('pesqD1'), o_pd2 = getD('pesqD2');
+            const pd3 = getD('pesqD3'), o_pd4 = getD('pesqD4');
+            const pd5 = getD('pesqD5'), o_pd6 = getD('pesqD6');
+
+            // Aplica a regra de extensão do fds
+            const pd2 = o_pd2 ? getNextBusinessDay(o_pd2) : null;
+            const pd4 = o_pd4 ? getNextBusinessDay(o_pd4) : null;
+            const pd6 = o_pd6 ? getNextBusinessDay(o_pd6) : null;
 
             let pesqTotal = 0;
             let pesqText = "[ DATAS DO PESQUISADOR ]\n";
@@ -773,19 +790,25 @@
             if (pd1 && pd2 && pd2 >= pd1) {
                 const dias = calcularPeriodo(pd1, pd2);
                 pesqTotal += dias;
-                pesqText += `- 1º Trecho: ${formatCompactDate(pd1)} a ${formatCompactDate(pd2)} (${dias} dias úteis)\n`;
+                const adj = (pd2.getTime() !== o_pd2.getTime()) ? '*' : '';
+                if (adj) hasAdjusts = true;
+                pesqText += `- 1º Trecho: ${formatCompactDate(pd1)} a ${formatCompactDate(pd2)}${adj} (${dias} dias úteis)\n`;
                 hasPesq = true;
             }
             if (pd3 && pd4 && pd4 >= pd3) {
                 const dias = calcularPeriodo(pd3, pd4);
                 pesqTotal += dias;
-                pesqText += `- 2º Trecho: ${formatCompactDate(pd3)} a ${formatCompactDate(pd4)} (${dias} dias úteis)\n`;
+                const adj = (pd4.getTime() !== o_pd4.getTime()) ? '*' : '';
+                if (adj) hasAdjusts = true;
+                pesqText += `- 2º Trecho: ${formatCompactDate(pd3)} a ${formatCompactDate(pd4)}${adj} (${dias} dias úteis)\n`;
                 hasPesq = true;
             }
             if (pd5 && pd6 && pd6 >= pd5) {
                 const dias = calcularPeriodo(pd5, pd6);
                 pesqTotal += dias;
-                pesqText += `- 3º Trecho: ${formatCompactDate(pd5)} a ${formatCompactDate(pd6)} (${dias} dias úteis)\n`;
+                const adj = (pd6.getTime() !== o_pd6.getTime()) ? '*' : '';
+                if (adj) hasAdjusts = true;
+                pesqText += `- 3º Trecho: ${formatCompactDate(pd5)} a ${formatCompactDate(pd6)}${adj} (${dias} dias úteis)\n`;
                 hasPesq = true;
             }
 
@@ -793,6 +816,10 @@
                 pesqText += `-> TOTAL PESQUISADOR: ${pesqTotal} dias úteis\n`;
                 texto += pesqText;
                 temDados = true;
+            }
+
+            if (hasAdjusts && temDados) {
+                texto += `\n(* Data estendida para o próximo dia útil na contagem)`;
             }
 
             if (!temDados) {
